@@ -1,0 +1,22 @@
+# Core
+*.aux
+*.lof
+*.log
+*.toc
+*.out
+*.fls
+*.cb
+*.bib
+*.cb2
+*.lot
+*.dvi
+*.xdv
+*.bbl
+*.bcg
+*.blg
+*.fdb_latexmk
+*.synctex
+*.synctex(busy)
+*.synctex.gz
+*.synctex.gz(busy)
+*.listing
