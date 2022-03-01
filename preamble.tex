@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %     ORIGINAL AUTHOR:  LEOTHELION
-%   VERSION (YYYY.MMA):  2022.03a
+%   VERSION (YYYY.MMA):  2022.03b
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % SHORTCUTS
@@ -282,7 +282,7 @@
 	\definecolor{white}{HTML}{EADCE3}\definecolor{brightwhite}{HTML}{EADCE3}
 	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
 }
-\def\solarizedDark{
+\def\solarisedDark{
 	%SOLARIZED HEX     16/8 TERMCOL  XTERM/HEX   L*A*B      sRGB        HSB
 	%--------- ------- ---- -------  ----------- ---------- ----------- -----------
 	%base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
@@ -312,8 +312,8 @@
 	\definecolor{white}{HTML}{eee8d5}\definecolor{brightwhite}{HTML}{fdf6e3}
 	\color{fg}\pagecolor{bg}
 }
-\def\solarizedLight{
-	\solarizedDark
+\def\solarisedLight{
+	\solarisedDark
 	\definecolor{bg}{HTML}{fdf6e3}\definecolor{fg}{HTML}{586e75}
 	\color{fg}\pagecolor{bg}
 }
@@ -330,7 +330,7 @@
 	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
 }
 
-\def\randomTheme{\pdfuniformdeviate 8}%=total number of themes
+\def\randomTheme{\pdfuniformdeviate 12}%=total number of themes
 \ifcase\randomTheme
 		\breeze%
 	\or \dracula%
@@ -339,8 +339,10 @@
 	\or \nord%
 	\or \radical%
 	\or \shizuka%
+	\or \solarisedDark%
+	\or \solarisedLight%
 	\or \transrights%
-	\else \shizuka%
+	\else \solarisedLight%
 \fi
 
 %\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
