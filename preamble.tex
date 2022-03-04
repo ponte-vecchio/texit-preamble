@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %     ORIGINAL AUTHOR:  LEOTHELION
-%   VERSION (YYYY.MMA):  2022.03b
+%   VERSION (YYYY.MMA):  2022.03c
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % SHORTCUTS
@@ -17,7 +17,7 @@
 \usepackage{IEEEtrantools}
 
 % OF FONTS
-\usepackage[fontsize = 11pt]{scrextend}
+\usepackage[fontsize = 10pt]{scrextend}
 \usepackage[utf8]{inputenc}
 \usepackage[finemath]{kotex}
 \usepackage{dhucs-nanumfont, dhucs-trivcj}
@@ -95,23 +95,30 @@
 \usepackage[version=4]{mhchem}
 \usepackage{chemfig}
 \setchemfig{atom sep=2em}
-\renewcommand*\printatom[1]{%
-	\footnotesize \ensuremath{\mathsf{#1}}％
-}
+\renewcommand*\printatom[1]{\footnotesize \ensuremath{\mathsf{#1}}}
 
 % OF COLOURS
 \usepackage{xcolor}
-\def\google{
-	\definecolor{fg}{HTML}{373b41}\definecolor{bg}{HTML}{FFFFFF}
-	\definecolor{black}{HTML}{1d1f21}\definecolor{brightblack}{HTML}{969896}
-	\definecolor{red}{HTML}{cc342b}\definecolor{brightred}{HTML}{cc342b}
-	\definecolor{green}{HTML}{198844}\definecolor{brightgreen}{HTML}{198844}
-	\definecolor{yellow}{HTML}{fba922}\definecolor{brightyellow}{HTML}{fba922}
-	\definecolor{blue}{HTML}{3971ed}\definecolor{brightblue}{HTML}{3971ed}
-	\definecolor{magenta}{HTML}{a36ac7}\definecolor{brightmagenta}{HTML}{a36ac7}
-	\definecolor{cyan}{HTML}{3971ed}\definecolor{brightcyan}{HTML}{3971ed}
-	\definecolor{white}{HTML}{c5c8c6}\definecolor{brightwhite}{HTML}{FFFFFF}
-}
+%\def\Template{
+%	\definecolor{fg}{HTML}{}
+%	\definecolor{bg}{HTML}{}
+%	\definecolor{black}{HTML}{}
+%	\definecolor{red}{HTML}{}
+%	\definecolor{green}{HTML}{}
+%	\definecolor{yellow}{HTML}{}
+%	\definecolor{blue}{HTML}{}
+%	\definecolor{magenta}{HTML}{}
+%	\definecolor{cyan}{HTML}{}
+%	\definecolor{white}{HTML}{}
+%	\definecolor{brightblack}{HTML}{}
+%	\definecolor{brightred}{HTML}{}
+%	\definecolor{brightgreen}{HTML}{}
+%	\definecolor{brightyellow}{HTML}{}
+%	\definecolor{brightblue}{HTML}{}
+%	\definecolor{brightmagenta}{HTML}{}
+%	\definecolor{brightcyan}{HTML}{}
+%	\definecolor{brightwhite}{HTML}{}
+%}
 \def\appleRGB{
 	% REDS
 	\def\applereds{lavender,bubblegum,carnation,salmon,maraschino,cayenne,mocha,
@@ -156,7 +163,27 @@
 	\definecolor{magnesium}{HTML}{C0C0C0}
 	\definecolor{mercury}{HTML}{EBEBEB}
 }
-\def\breeze{
+\def\AyuMirage{
+	\definecolor{fg}{HTML}{d9d7ce}
+	\definecolor{bg}{HTML}{212733}
+	\definecolor{black}{HTML}{191e2a}
+	\definecolor{red}{HTML}{ed8274}
+	\definecolor{green}{HTML}{a6cc70}
+	\definecolor{yellow}{HTML}{fad07b}
+	\definecolor{blue}{HTML}{6dcbfa}
+	\definecolor{magenta}{HTML}{cfbafa}
+	\definecolor{cyan}{HTML}{90e1c6}
+	\definecolor{white}{HTML}{c7c7c7}
+	\definecolor{brightblack}{HTML}{686868}
+	\definecolor{brightred}{HTML}{f28779}
+	\definecolor{brightgreen}{HTML}{bae67e}
+	\definecolor{brightyellow}{HTML}{ffd580}
+	\definecolor{brightblue}{HTML}{73d0ff}
+	\definecolor{brightmagenta}{HTML}{d4bfff}
+	\definecolor{brightcyan}{HTML}{95e6cb}
+	\definecolor{brightwhite}{HTML}{ffffff}
+}
+\def\Breeze{
 	\definecolor{bg}{HTML}{1E2229}\definecolor{fg}{HTML}{BBBBBB}
 	\definecolor{black}{HTML}{1E2229}\definecolor{brightblack}{HTML}{7F8C8D}
 	\definecolor{red}{HTML}{ED1515}\definecolor{brightred}{HTML}{C0392B}
@@ -168,7 +195,27 @@
 	\definecolor{white}{HTML}{FCFCFC}\definecolor{brightwhite}{HTML}{FFFFFF}
 	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
 }
-\def\dracula{
+\def\Catpuccin{% https://github.com/catppuccin/catppuccin
+	\definecolor{fg}{HTML}{D9E0EE}
+	\definecolor{bg}{HTML}{1E1D2F}
+	\definecolor{black}{HTML}{6E6C7E}
+	\definecolor{red}{HTML}{F28FAD}
+	\definecolor{green}{HTML}{ABE9B3}
+	\definecolor{yellow}{HTML}{FAE3B0}
+	\definecolor{blue}{HTML}{96CDFB}
+	\definecolor{magenta}{HTML}{F5C2E7}
+	\definecolor{cyan}{HTML}{89DCEB}
+	\definecolor{white}{HTML}{D9E0EE}
+	\definecolor{brightblack}{HTML}{988BA2}
+	\definecolor{brightred}{HTML}{F28FAD}
+	\definecolor{brightgreen}{HTML}{ABE9B3}
+	\definecolor{brightyellow}{HTML}{FAE3B0}
+	\definecolor{brightblue}{HTML}{96CDFB}
+	\definecolor{brightmagenta}{HTML}{F5C2E7}
+	\definecolor{brightcyan}{HTML}{89DCEB}
+	\definecolor{brightwhite}{HTML}{D9E0EE}
+}
+\def\Dracula{
 	\definecolor{bg}{HTML}{282A36}\definecolor{fg}{HTML}{F8F8F2}
 	\definecolor{black}{HTML}{21222C}\definecolor{brightblack}{HTML}{6272A4}
 	\definecolor{red}{HTML}{FF5555}\definecolor{brightred}{HTML}{FF6E6E}
@@ -180,7 +227,7 @@
 	\definecolor{white}{HTML}{F8F8F2}\definecolor{brightwhite}{HTML}{FFFFFF}
 	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
 }
-\def\google{
+\def\Google{
 	\definecolor{fg}{HTML}{373b41}\definecolor{bg}{HTML}{FFFFFF}
 	\definecolor{black}{HTML}{1d1f21}\definecolor{brightblack}{HTML}{969896}
 	\definecolor{red}{HTML}{cc342b}\definecolor{brightred}{HTML}{cc342b}
@@ -192,7 +239,7 @@
 	\definecolor{white}{HTML}{c5c8c6}\definecolor{brightwhite}{HTML}{FFFFFF}
 	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
 }
-\def\gruvbox{
+\def\Gruvbox{
 	\definecolor{bg}{HTML}{282828}\definecolor{fg}{HTML}{ebdbb2}
 	\definecolor{black}{HTML}{282828}\definecolor{brightblack}{HTML}{928374}
 	\definecolor{red}{HTML}{cc241d}\definecolor{brightred}{HTML}{fb4934}
@@ -204,7 +251,7 @@
 	\definecolor{white}{HTML}{a89984}\definecolor{brightwhite}{HTML}{ebdbb2}
 	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
 }
-\def\moe{
+\def\Moe{
 	\definecolor{bg}{HTML}{131313}\definecolor{fg}{HTML}{788CA1}
 	\definecolor{black}{HTML}{2B2B2B}\definecolor{brightblack}{HTML}{262626}
 	\definecolor{red}{HTML}{FF5858}\definecolor{brightred}{HTML}{FF597D}
@@ -216,7 +263,7 @@
 	\definecolor{white}{HTML}{3E4F58}\definecolor{brightwhite}{HTML}{324047}
 	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
 }
-\def\nord{
+\def\Nord{
 	\definecolor{bg}{HTML}{2E3440}
 	\definecolor{fg}{HTML}{D8DEE9}
 	\definecolor{black}{HTML}{3B4252}
@@ -237,28 +284,7 @@
 	\definecolor{brightwhite}{HTML}{ECEFF4}
 	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
 }
-\def\nordlight{
-	\definecolor{bg}{HTML}{e5e9f0}
-	\definecolor{fg}{HTML}{414858}
-	\definecolor{black}{HTML}{3B4252}
-	\definecolor{red}{HTML}{BF616A}
-	\definecolor{green}{HTML}{A3BE8C}
-	\definecolor{yellow}{HTML}{EBCB8B}
-	\definecolor{blue}{HTML}{81A1C1}
-	\definecolor{magenta}{HTML}{B48EAD}
-	\definecolor{cyan}{HTML}{88C0D0}
-	\definecolor{white}{HTML}{E5E9F0}
-	\definecolor{brightblack}{HTML}{4C566A}
-	\definecolor{brightred}{HTML}{BF616A}
-	\definecolor{brightgreen}{HTML}{A3BE8C}
-	\definecolor{brightyellow}{HTML}{EBCB8B}
-	\definecolor{brightblue}{HTML}{81A1C1}
-	\definecolor{brightmagenta}{HTML}{B48EAD}
-	\definecolor{brightcyan}{HTML}{8FBCBB}
-	\definecolor{brightwhite}{HTML}{ECEFF4}
-	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
-}
-\def\radical{
+\def\Radical{
 	\definecolor{bg}{HTML}{141322}\definecolor{fg}{HTML}{A0CDCF}
 	\definecolor{black}{HTML}{1F216F}\definecolor{brightblack}{HTML}{290cad}
 	\definecolor{red}{HTML}{ff448a}\definecolor{brightred}{HTML}{ff326f}
@@ -270,7 +296,7 @@
 	\definecolor{white}{HTML}{c9eee6}\definecolor{brightwhite}{HTML}{c5fff0}
 	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
 }
-\def\shizuka{
+\def\Shizuka{
 	\definecolor{bg}{HTML}{151219}\definecolor{fg}{HTML}{EADCE3}
 	\definecolor{black}{HTML}{151219}\definecolor{brightblack}{HTML}{9C9097}
 	\definecolor{red}{HTML}{A18E95}\definecolor{brightred}{HTML}{A18E95}
@@ -282,7 +308,7 @@
 	\definecolor{white}{HTML}{EADCE3}\definecolor{brightwhite}{HTML}{EADCE3}
 	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
 }
-\def\solarisedDark{
+\def\SolarisedDark{
 	%SOLARIZED HEX     16/8 TERMCOL  XTERM/HEX   L*A*B      sRGB        HSB
 	%--------- ------- ---- -------  ----------- ---------- ----------- -----------
 	%base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
@@ -312,12 +338,12 @@
 	\definecolor{white}{HTML}{eee8d5}\definecolor{brightwhite}{HTML}{fdf6e3}
 	\color{fg}\pagecolor{bg}
 }
-\def\solarisedLight{
-	\solarisedDark
+\def\SolarisedLight{
+	\SolarisedDark
 	\definecolor{bg}{HTML}{fdf6e3}\definecolor{fg}{HTML}{586e75}
 	\color{fg}\pagecolor{bg}
 }
-\def\transrights{
+\def\Transrights{
 	\definecolor{bg}{HTML}{1D1F21}\definecolor{fg}{HTML}{959896}
 	\definecolor{black}{HTML}{1D1F21}\definecolor{brightblack}{HTML}{666666}
 	\definecolor{red}{HTML}{C479A2}\definecolor{brightred}{HTML}{C479A2}
@@ -330,19 +356,21 @@
 	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
 }
 
-\def\randomTheme{\pdfuniformdeviate 12}%=total number of themes
+\def\randomTheme{\pdfuniformdeviate 15}%=total number of themes
 \ifcase\randomTheme
-		\breeze%
-	\or \dracula%
-	\or \gruvbox%
-	\or \moe%
-	\or \nord%
-	\or \radical%
-	\or \shizuka%
-	\or \solarisedDark%
-	\or \solarisedLight%
-	\or \transrights%
-	\else \solarisedLight%
+	\AyuMirage
+	\or \Breeze%
+	\or \Catpuccin%
+	\or \Dracula%
+	\or \Gruvbox%
+	\or \Moe%
+	\or \Nord%
+	\or \Radical%
+	\or \Shizuka%
+	\or \SolarisedDark%
+	\or \SolarisedLight%
+	\or \Transrights%
+	\else \Google%
 \fi
 
 %\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
