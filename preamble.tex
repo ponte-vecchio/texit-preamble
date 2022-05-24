@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %      ORIGINAL AUTHOR:  LEOTHELION
-%   VERSION (YYYY.MMA):  2022.05a
+%   VERSION (YYYY.MMA):  2022.05b
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % SHORTCUTS
@@ -62,7 +62,7 @@
 \usepackage{IEEEtrantools}
 
 % OF FONTS
-\usepackage[fontsize = 10pt]{scrextend}
+\usepackage[fontsize = 12pt]{scrextend}
 \usepackage[utf8]{inputenc}
 \usepackage[finemath]{kotex}
 \usepackage{dhucs-nanumfont, dhucs-trivcj}
@@ -107,7 +107,7 @@
 	{
 		{}{{\color{fg} Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.}}
 		{jp}{\cjksf{\color{fg}寿限無, 寿限無.\\五劫の擦り切れ\\海砂利水魚の.\\水行末 雲来末 風来末\\食う寝る処に住む処\\やぶら小路の藪柑子}}
-		{ko}{{\color{fg} 어머님, 나는 별 하나에\\아름다운 말 한 마디씩 불러 봅니다.\\소학교 때 책상을 같이했던 아이들의 이름과,\\패, 경, 옥 이런 이국 소녀들의 이름과,\\벌써 아기 어머니 된 계집애들의 이름과,\\가난한 이웃 사람들의 이름과,\\비둘기, 강아지, 토끼, 노새, 노루,\\`프랑시스 잠', `라이너 마리아 릴케',\\이런 시인의 이름을 불러 봅니다.}}
+		{ko}{{\color{fg} 어머님, 나는 별 하나에 아름다운 말 한 마디씩 불러 봅니다. 소학교 때 책상을 같이했던 아이들의 이름과, 패, 경, 옥 이런 이국 소녀들의 이름과, 벌써 아기 어머니 된 계집애들의 이름과, 가난한 이웃 사람들의 이름과, 비둘기, 강아지, 토끼, 노새, 노루, `프랑시스 잠', `라이너 마리아 릴케', 이런 시인의 이름을 불러 봅니다.}}
 		{zh}{{\color{fg}\cjk[bkai]{属教患席国柳画写挙会任言仮橋田書川能進止.\ 部亡工読演整禁演択話介下.\ 彼聴米権保形多責業表滞薬響避冷柱挙見原.\ 外情関茂覚郵払表年供聞者写政耶芸撃設推.\ 合品可真盗度止光格記治天惑供断告.丸調女話電届統務北予読転悠要話本.\ 供田必処下稿跡真実功着札.\ 形出断技馬出氏最事辺香燃計川周証集合.\ 改川円加手告情写試賀活績持域台囲.}}}
 		{tb}{{\color{fg}\scriptsize\tib\swasti. .yul zhig na bram ze dbyug pa can zhes bya zhig 'dug ste. rab du dbul 'phongs pa bza' ba dang,. bgo med pa zhig go. des khyim bdag cig las ba glang zhig b-rnyes te. nyin par spyad nas ba glang de khrid de khyim bdag de'i khyim du song ba dang,. de na khyim bdag ni zan za ste. dbyug pa can gyis ba glang de khyim gyi nang du btang ba dang,. ba glang sgo gzhan du song nas stor ro.. khyim bdag de zan de zos nas langs pa dang,. de na ba glang ma mthong nas des dbyug pa can la glang ga re zhes byas pa dang,. des smras pa. khyod kyi khyim du btang ngo,. .khyod kyis nga'i glang bor gyis slar byin cig ces smras pa dang,. des smras pa. ngas ma bor ro.. de nas de gnyis 'grogs te. rgyal po'i thad du 'dong ba dang,. 'u bu cag gi rigs pa dang mi rigs pa rtog par 'gyur ro zhes smras nas de gnyis dong ba dang,. mi gzhan zhig gi rta rgod ma zhig bros nas. des dbyug pa can la smras pa. rgod ma ma btang zhes smras pa dang,. des rdo zhig blangs te 'phangs pa dang rta'i rkang pa la phog nas rkan}}
 	}%
@@ -164,50 +164,50 @@
 %	\definecolor{brightcyan}{HTML}{}
 %	\definecolor{brightwhite}{HTML}{}
 %}
-\def\appleRGB{
-	% REDS
-	\def\applereds{lavender,bubblegum,carnation,salmon,maraschino,cayenne,mocha,
-	tangerine,cantaloupe,plum,maroon}
-	\definecolor{lavender}{HTML}{D783FF}
-	\definecolor{bubblegum}{HTML}{FF85FF}
-	\definecolor{carnation}{HTML}{FF8AD8}
-	\definecolor{salmon}{HTML}{FF7E79}
-	\definecolor{maraschino}{HTML}{FF2600}
-	\definecolor{cayenne}{HTML}{941100}
-	\definecolor{mocha}{HTML}{945200}
-	\definecolor{tangerine}{HTML}{FF9300}
-	\definecolor{cantaloupe}{HTML}{FFD479}
-	\definecolor{plum}{HTML}{942193}
-	\definecolor{maroon}{HTML}{941751}
-	% GREENS
-	\def\applegreens{asparagus,fern,teal,flora,honeydew,seafoam}
-	\definecolor{asparagus}{HTML}{929000}
-	\definecolor{fern}{HTML}{4F8F00}
-	\definecolor{teal}{HTML}{009193}
-	\definecolor{flora}{HTML}{73FA79}
-	\definecolor{honeydew}{HTML}{D4FB79}
-	\definecolor{seafoam}{HTML}{00FA92}
-	% BLUES
-	\def\appleblues{turquoise,ocean,midnight,eggplant,aqua,blueberry,spindrift,
-	orchid}
-	\definecolor{turquoise}{HTML}{00FDFF}
-	\definecolor{ocean}{HTML}{005493}
-	\definecolor{midnight}{HTML}{011993}
-	\definecolor{eggplant}{HTML}{531B93}
-	\definecolor{aqua}{HTML}{0096FF}
-	\definecolor{blueberry}{HTML}{0433FF}
-	\definecolor{spindrift}{HTML}{73FCD6}
-	\definecolor{orchid}{HTML}{7A81FF}
-	% GGREYSCALE
-	\def\applegreys{liquorice,tungsten,iron,tin,silver,magnesium,mercury}
-	\definecolor{liquorice}{HTML}{000000}
-	\definecolor{tungsten}{HTML}{424242}
-	\definecolor{iron}{HTML}{5E5E5E}
-	\definecolor{tin}{HTML}{919191}
-	\definecolor{silver}{HTML}{A3A3A3}
-	\definecolor{magnesium}{HTML}{C0C0C0}
-	\definecolor{mercury}{HTML}{EBEBEB}
-}
+
+% REDS
+\def\applereds{lavender,bubblegum,carnation,salmon,maraschino,cayenne,mocha,
+tangerine,cantaloupe,plum,maroon}
+\definecolor{lavender}{HTML}{D783FF}
+\definecolor{bubblegum}{HTML}{FF85FF}
+\definecolor{carnation}{HTML}{FF8AD8}
+\definecolor{salmon}{HTML}{FF7E79}
+\definecolor{maraschino}{HTML}{FF2600}
+\definecolor{cayenne}{HTML}{941100}
+\definecolor{mocha}{HTML}{945200}
+\definecolor{tangerine}{HTML}{FF9300}
+\definecolor{cantaloupe}{HTML}{FFD479}
+\definecolor{plum}{HTML}{942193}
+\definecolor{maroon}{HTML}{941751}
+% GREENS
+\def\applegreens{asparagus,fern,teal,flora,honeydew,seafoam}
+\definecolor{asparagus}{HTML}{929000}
+\definecolor{fern}{HTML}{4F8F00}
+\definecolor{teal}{HTML}{009193}
+\definecolor{flora}{HTML}{73FA79}
+\definecolor{honeydew}{HTML}{D4FB79}
+\definecolor{seafoam}{HTML}{00FA92}
+% BLUES
+\def\appleblues{turquoise,ocean,midnight,eggplant,aqua,blueberry,spindrift,
+orchid}
+\definecolor{turquoise}{HTML}{00FDFF}
+\definecolor{ocean}{HTML}{005493}
+\definecolor{midnight}{HTML}{011993}
+\definecolor{eggplant}{HTML}{531B93}
+\definecolor{aqua}{HTML}{0096FF}
+\definecolor{blueberry}{HTML}{0433FF}
+\definecolor{spindrift}{HTML}{73FCD6}
+\definecolor{orchid}{HTML}{7A81FF}
+% GGREYSCALE
+\def\applegreys{liquorice,tungsten,iron,tin,silver,magnesium,mercury}
+\definecolor{liquorice}{HTML}{000000}
+\definecolor{tungsten}{HTML}{424242}
+\definecolor{iron}{HTML}{5E5E5E}
+\definecolor{tin}{HTML}{919191}
+\definecolor{silver}{HTML}{A3A3A3}
+\definecolor{magnesium}{HTML}{C0C0C0}
+\definecolor{mercury}{HTML}{EBEBEB}
+
 \def\AyuMirage{
 	\definecolor{fg}{HTML}{d9d7ce}
 	\definecolor{bg}{HTML}{212733}
@@ -253,7 +253,7 @@
 	\definecolor{cyan}{HTML}{4ac0b4}
 	\definecolor{white}{HTML}{eeeeee}
 	\definecolor{brightblack}{HTML}{365f6f}
-	\definecolor{brightred}{HTML}{a88663}
+	\definecolor{brightred}{HTML}{c86663}
 	\definecolor{brightgreen}{HTML}{6da741}
 	\definecolor{brightyellow}{HTML}{ffc107}
 	\definecolor{brightblue}{HTML}{21a4df}
