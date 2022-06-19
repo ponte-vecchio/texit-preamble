@@ -1,0 +1,19 @@
+\long\def\fonttable#1{%
+    \def\h@x{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F}
+    \def\FT@query{#1}
+    \font\FT@default=qx-lmtt8 at 7pt%
+    \font\FT@selected=\FT@query%
+    \def\FT@width{1.75em}%
+    \vbox{\offinterlineskip
+        \halign to \hsize{\tabskip=0em plus0em
+            \hfil##&\hfil##\hfil\cr
+            \multispan{2} \hfil{\color{magenta}\FT@selected \fontname\the\font}\hfil\cr\noalign{\bigskip}
+            {\color{bg}\FT@default \char"22 0x}&
+            \foreach \j in \h@x{\makebox[\FT@width][c]{\FT@default \color{magenta}\char"22 \textcolor{magenta!25!bg}{x}\j}~}\cr
+        }\medskip{\color{bg!80!fg}\hrule}\smallskip
+        \foreach \h in \h@x{%
+            \mbox{\FT@default \color{magenta}\char"22 \h \textcolor{magenta!25!bg}{x}} \foreach \g in \h@x{%
+                \makebox[\FT@width][c]{\FT@selected\color{fg}\char"\h\g}~} \vskip.25em {\color{bg!80!fg}\hrule}\smallskip
+        }
+    }
+}
