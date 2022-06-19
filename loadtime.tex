@@ -1,0 +1,42 @@
+\newtoks\files@list
+\newcount\files@level
+
+\AddToHook{file/before}{%
+	\expandafter\xdef\csname file@time@\CurrentFile\endcsname{\the\pdfelapsedtime}%
+	\expandafter\xdef\csname file@level@\CurrentFile\endcsname{\the\files@level}%
+	\global\advance\files@level\@ne
+	\global\files@list\expanded{{\the\files@list{\CurrentFile}}}%
+}
+
+\AddToHook{file/after}{%
+	%  Do not do anything if unbalanced.
+	%+ This can happen if this code itself is inside an \input.
+	\ifcsname file@time@\CurrentFile\endcsname
+	\global\advance\files@level\m@ne
+	\expandafter\xdef\csname file@time@\CurrentFile\endcsname
+	{\the\numexpr\pdfelapsedtime-\csname file@time@\CurrentFile\endcsname}%
+	\fi
+}
+
+\protected\def\loadtime{\fileinfoA\fileinfoB\relax}
+\def\fileinfoA#1#2{%
+	\begingroup \par \ttfamily \scriptsize
+	\expandafter\fileinfoB \the\files@list \relax%
+	\endgroup
+}
+
+\def\fileinfoB#1{\ifx\relax#1\expandafter\@gobblethree \fi \fileinfoC{#1}\fileinfoB}
+
+\def\fileinfoC#1{\hbox to\hsize{%
+		%  CM doesn't have bold tt, FiraMono does.
+		\ifnum\csname file@level@#1\endcsname=\z@ \bfseries \fi
+		\hbox to4em{\hss \csname file@time@#1\endcsname\quad}%
+		\count@\csname file@level@#1\endcsname \relax
+		\loop \ifnum\count@>\z@
+		\qquad
+		\advance\count@\m@ne
+		\repeat
+		#1\hfil
+}}
+
+\tmp

@@ -1,0 +1,29 @@
+\usepackage{xparse}
+%%%%%%%%%
+% match case
+% https://tex.stackexchange.com/questions/386280/switch-case-condition/386307
+\ExplSyntaxOn
+
+\msg_new:nnn
+{ switchcase }
+{ no-match }
+{ There~is~no~entry~`#1'~in~the~switch~statement! }
+
+\NewDocumentCommand\matchcase{ m m }
+{
+	\str_case:nnF { #1 } { #2 } { \msg_error:nnn { switchcase } { no-match } { #1 } }
+}
+
+\ExplSyntaxOff
+
+% Lorem ims
+\newcommand\ipsum[1]{%
+	\matchcase{#1}%
+	{
+		{}{{Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.}}
+		{jp}{\cjksf{いづれの御時にか　女御更衣あまたさぶらひたまひけるなかに　いとやむごとなき際にはあらぬが　すぐれて時めきたまふ　ありけり　はじめより　我はと思ひあがりたまへる御方々　めざましきものにおとしめ嫉みたまふ}}
+		{ko}{{어머님, 나는 별 하나에 아름다운 말 한 마디씩 불러 봅니다. 소학교 때 책상을 같이했던 아이들의 이름과, 패, 경, 옥 이런 이국 소녀들의 이름과, 벌써 아기 어머니 된 계집애들의 이름과, 가난한 이웃 사람들의 이름과, 비둘기, 강아지, 토끼, 노새, 노루, `프랑시스 잠', `라이너 마리아 릴케', 이런 시인의 이름을 불러 봅니다.}}
+		{zh}{{\cjk[bkai]{属教患席国柳画写挙会任言仮橋田書川能進止.\ 部亡工読演整禁演択話介下.\ 彼聴米権保形多責業表滞薬響避冷柱挙見原.\ 外情関茂覚郵払表年供聞者写政耶芸撃設推.\ 合品可真盗度止光格記治天惑供断告.丸調女話電届統務北予読転悠要話本.\ 供田必処下稿跡真実功着札.\ 形出断技馬出氏最事辺香燃計川周証集合.\ 改川円加手告情写試賀活績持域台囲.}}}
+		{tb}{{\scriptsize\tib\swasti. .yul zhig na bram ze dbyug pa can zhes bya zhig 'dug ste. rab du dbul 'phongs pa bza' ba dang,. bgo med pa zhig go. des khyim bdag cig las ba glang zhig b-rnyes te. nyin par spyad nas ba glang de khrid de khyim bdag de'i khyim du song ba dang,. de na khyim bdag ni zan za ste. dbyug pa can gyis ba glang de khyim gyi nang du btang ba dang,. ba glang sgo gzhan du song nas stor ro.. khyim bdag de zan de zos nas langs pa dang,. de na ba glang ma mthong nas des dbyug pa can la glang ga re zhes byas pa dang,. des smras pa. khyod kyi khyim du btang ngo,. .khyod kyis nga'i glang bor gyis slar byin cig ces smras pa dang,. des smras pa. ngas ma bor ro.. de nas de gnyis 'grogs te. rgyal po'i thad du 'dong ba dang,. 'u bu cag gi rigs pa dang mi rigs pa rtog par 'gyur ro zhes smras nas de gnyis dong ba dang,. mi gzhan zhig gi rta rgod ma zhig bros nas. des dbyug pa can la smras pa. rgod ma ma btang zhes smras pa dang,. des rdo zhig blangs te 'phangs pa dang rta'i rkang pa la phog nas rkan}}
+	}%
+}

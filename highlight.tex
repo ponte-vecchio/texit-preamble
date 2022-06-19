@@ -1,0 +1,332 @@
+\usepackage{listings}
+\newcommand{\cat}[2][]{\lstinputlisting[#1]{#2}}
+\lstset{
+	basicstyle=\ttfamily\color{fg},
+	keywordstyle=\color{yellow},
+	numberstyle=\ttfamily\small\color{red},
+	stringstyle=\color{magenta},
+	commentstyle=\color{green},
+	showstringspaces=false,
+	breaklines=true,
+	tab=$\color{blue!40!bg}\to$,
+	showtabs,
+	numbers=left,
+	numbersep=5pt,
+	prebreak=\mbox{{\color{gray}\tiny$\searrow$}},
+}
+% BASH.PRF
+\lstdefinestyle{leobash}{%
+  language=Bash,
+  keywordstyle=\bfseries\color{yellow},
+  basicstyle=\scriptsize\ttfamily\color{fg},
+  numberstyle=\scriptsize\ttfamily\bfseries\color{yellow!50!red},
+  stringstyle=\color{green},
+  commentstyle=\itshape\color{green!70!bg},
+  sensitive,
+  tabsize=2,
+  tab=$\color{blue!40!bg}\to$,
+  showtabs,
+  numbers=left,
+  numbersep=5pt,
+  % Keywords from GNU Coreutils
+  moreemph=[2]{alias, apropos, apt, apt-get, aptitude, aspell, at, awk,
+  basename, base32, base64, bash, bc, bg, bind, breka, builtin, bzip2,
+  cal,caller,cat,cd,cfdisk,chattr,chgrp,chmod,chown,chpasswd,chroot,
+  chkconfig,cksum,clear,cmp,comm,command,continue,cp,cpio,cron,crontab,csplit,
+  curl,cut,date,dc,dd,ddrescue,declare,df,diff,diff3,dig,dir,dircolors,
+  dirname,dirs,dos2unix,dmesg,dpkg,du,echo,egrep,eject,enable,env,ethtool,
+  eval,exec,exit,expect,expand,export,expr,false,fdformat,fdisk,fg,fgrep,
+  file,fine,fmt,fold,for,format,free,fsck,ftp,function,fuser,gawk,getopts,
+  grep,groupadd,groupdel,groupmod,groups,gzip,hash,head,help,history,hostname,
+  htop,iconv,id,ifconfig,ifdown,ifup,import,install,iostat,ip,jobs,join,
+  kill,killall,less,let,link,ln,local,locate,logname,logout,look,lpc,lpr,
+  lprint,lprintd,lprintq,lprm,lsattr,lsblk,ls,lsof,lspci,make,man,mapfile,
+  mkdir,mkfifo,mkfile,mkisofs,mknod,mktemp,more,most,mount,mtools,mtr,mv,mmv,
+  nc,netstat,nft,nice,nl,nohup,notify-send,nslookup,open,op,passwd,paste,
+  pathchk,perf,ping,pgrep,pkill,popd,pr,printcap,printenv,printf,ps,pushd,pv,
+  pwd,quota,quotacheck,ram,rar,rcp,read,readarray,readonly,reboot,rename,
+  renice,remsync,return,rev,rm,rmdir,rsync,screen,scp,sdiff,sed,select,seq,
+  set,sftp,shift,shopt,shuf,shutdown,sleep,slocate,sort,source,split,ss,ssh,
+  stat,strace,su,sudo,sum,suspend,sync,tail,tar,tee,test,time,timeout,times,
+  tmux,touch,top,tput,traceroute,trap,tr,true,tsort,tty,type,ulimit,umask,
+  umount,unalias,uname,unexpand,uniq,units,unix2dos,unrar,unset,unshar,until,
+  uptime,useradd,userdel,usermod,users,uuencode,uudecode,v,vdir,vi,vim,vmstat,
+  w,wait,watch,wc,whereis,which,while,who,whoami,wget,write,xargs,xdg-open,
+  xxd,xz,yes,zip,@@, \#\#\#,xhost,gunzip,uncompress,unzip,bunzip2,7z},
+  % ArchLinux commands
+  moreemph=[2]{pacman,makepkg,pactree,pacstrap,netctl,mkinitcpio,modprobe,
+  pacman-key,paru,yay,pkgfile,git,makepkg},
+  % Delims
+  % Operators and Args
+  alsoletter={+,+=,-,-=,*,*=,**,/,/=,\%,\%=,++,--,\&\&,||,!,?,\&,\&=,|,|=,\^,
+  \^=,~,<<,<<=,>>,>>=,<<<,<,<=,=,==,!=,>,>=,[,],[[,]],];,]];,\&>},
+  moreemph=[3]{+,+=,-,-=,*,*=,**,/,/=,\%,\%=,++,--,\&\&,||,!,?,\&,\&=,|,|=,\^,
+  \^=,~,<<,<<=,>>,>>=,<<<,<,<=,=,==,!=,>,>=,-z,-n,-a,-o,-e,-f,-s,-d,-c,-p,-h,
+  -L,-S,-t,-r,-w,-x,-g,-u,-k,-O,-G,-N,-nt,-ot,-ef,[,],[[,]],];,]];,\&>},
+  % pacman flags
+  moreemph=[4]{-S,-Rs,-Ss,-Syu,-Sc,-Scc,-Qdtq,-Qmq,-Rs,-D,-Sw,-Si,-Qi,-Fl,-Qo,
+  -Ql,-F,-Qc,-Ss,-Qu,-Sl,-Q,-Qm,-Qs,-Qtt,-Qe,-Qd,-Sii,-Qii,-Qk,-Dk,-Qp, -Qpl,
+  -U,--asexplicit},
+  % git commands
+  moreemph=[5]{%
+  % Main porcelain commands
+    add,am,archive,bisect,branch,bundle,checkout,cherry-pick,
+    citool,clean,clone,commit,describe,diff,fetch,format-patch,gc,grep,gui,
+    init,log,maintenance,merge,mv,notes,pull,push,range-diff,rebase,reset,
+    revert,rm,shortlog,show,sparse-checkout,stash,status,submodule,switch,tag,
+    worktree,gitk,
+    % Ancillary porcelain commands
+    config,fast-export,fast-import,filter-branch,mergetool,pack-refs,prune,
+    reflog,remote,repack,replace,annotate,blame,bugreport,count-objects,
+    difftool,fsck,help,instaweb,merge-tree,rerere,show-branch,verift-commit,
+    verify-tag,whatchanged,gitweb
+    % Interacting
+    archimport,cvsexportcommit,cvsimport,cvsserver,imap-send,p4,quiltimport,
+    request-pull,send-email,svn,
+    % REset REstore REvert
+    revert,restore,reset,
+  % Plumbing commands
+    apply,checkout-index,commit-graph,commit-tree,hash-object,index-pack,
+    merge-file,merge-index,mktag,mktree,multi-pack-index,pack-objects,
+    prune-packed,read-tree,symbolic-ref,unpack-objects,undate-index,update-ref,
+    write-tree,cat-file,cherry,diff-files,diff-index,diff-tree,for-each-ref,
+    for-each-repo,get-tar-commit-id,ls-files,ls-remote,ls-tree,merge-base,
+    name-rev,pack-redundant,rev-list,rev-parse,show-index,show-ref,unpack-file,
+    var,verify-pack,
+    % Sync
+    daemon,fetch-pack,send-pack,http-backend,update-server-info,http-fetch,
+    http-push,receive-pack,shell,upload-archive,upload-pack,
+    % Helper
+    check-attr,check-ignore,check-mailmap,check-ref-format,column,credential,
+    credential-cache,credential-store,fmt-merge-msg, intepret-trailers,
+    mailinfo,mailsplit,merge-one-file,patch-id,sh-i18n,sh-setup,stripspace,
+  % Concepts
+  gitattributes,gitcli,gitcore-tutorial,gitcredentials,gitcvs-migration,
+  gitdiffcore,giteveryday,gitfaq,gitglossary,githooks,gitignore,gitmailmap,
+  gitmodules,gitnamespaces,gitremote-helpers,gitrepository-layout,
+  gitrevisions,gitsubmodules,gittutorial,gittutorial-2,gitworiflows
+  },
+  % git flags
+  moreemph=[6]{--version,--help,-C,-c,--config-env,--depth,--exec-path,--html-path,
+  --man-path,--info-path,--paginate,--no-pager,--git-dir,--work-tree,
+  --namespace,--super-prefix,--bare,--no-replace-objects,--literal-pathspecs,
+  --glob-pathspecs,--noglob-pathspecs,--no-optional-locks,--list-commands},
+  emphstyle=[2]{\color{blue}},%keywords
+  emphstyle=[3]{\bfseries\color{magenta}},%operators
+  emphstyle=[4]{\color{cyan}},%flags
+  emphstyle=[5]{\color{cyan}},%git commands
+  emphstyle=[6]{\color{cyan}}%flags
+}
+% LEOPYTHON.PRF
+\lstdefinestyle{leopython}{%
+  language=Python,
+  keywordstyle=\color{yellow},
+  basicstyle=\ttfamily\color{fg},
+  numberstyle=\small\sffamily\color{brightred},
+  stringstyle=\color{brightgreen},
+  commentstyle=\color{brightblack},
+  tab=$\color{blue!40!bg}\to$,
+  showtabs,
+  numbers=left,
+  numbersep=5pt,
+  % Delims
+  moredelim=[il]{[}{]}, moredelim=[il]{\{}{\}},
+  moredelim=[l]{(}{)}, moredelim=[s]{<}{>},
+  %
+  % Keywords
+  morekeywords={abs, aiter, all, any, anext, ascii, bin, bool, breakpoint,
+  bytearray, bytes, callable, chr, classmethod, compile, complex, delattr,
+  dict, dir, divmod, enumerate, eval, exec, filter, float, format, frozenset,
+  getattr, globals, hasattr, hash, help, hex, id, input, int, isinstance,
+  issubclass, iter, len, list, locals, map, max, memoryview, min, next,
+  object, oct, open, ord, pow, print,property, range, repr, reversed, round,
+  set, setattr, slice, sorted, staticmethod, str, sum, super, tuple, type,
+  vars, zip, \_\_import\_\_},
+  moreemph=[231]{False, None, True, and, as, assert, async, await, break,
+  class, continue, def, del, elif, else, except, finally, for, from, global,
+  if, import, in, is, lambda, nonlocal, not, or, pass, raise, return, try,
+  while, with, yield},
+  %
+  % Literals
+  % String literals (3.10)
+  morestring=[s]{'}{'}, morestring=[s]{"}{"},
+  morestring=[s]{'''}{'''}, morestring=[s]{"""}{"""},
+  morestring=[s]{f'}{'}, morestring=[s]{f"}{"},
+  morestring=[s]{f'''}{'''}, morestring=[s]{f"""}{"""},
+  morestring=[s]{fr'}{'}, morestring=[s]{fr"}{"},
+  morestring=[s]{fr'''}{'''}, morestring=[s]{fr"""}{"""},
+  morestring=[s]{rf'}{'}, morestring=[s]{rf"}{"},
+  morestring=[s]{rf'''}{'''}, morestring=[s]{rf"""}{"""},
+  morestring=[s]{R'}{'}, morestring=[s]{R"}{"},
+  morestring=[s]{R'''}{'''}, morestring=[s]{R"""}{"""},
+  morestring=[s]{F'}{'}, morestring=[s]{F"}{"},
+  morestring=[s]{F'''}{'''}, morestring=[s]{F"""}{"""},
+  morestring=[s]{U'}{'}, morestring=[s]{U"}{"},
+  morestring=[s]{U'''}{'''}, morestring=[s]{U"""}{"""},
+  morestring=[s]{Fr'}{'}, morestring=[s]{Fr"}{"},
+  morestring=[s]{Fr'''}{'''}, morestring=[s]{Fr"""}{"""},
+  morestring=[s]{fR'}{'}, morestring=[s]{fR"}{"},
+  morestring=[s]{fR'''}{'''}, morestring=[s]{fR"""}{"""},
+  morestring=[s]{FR'}{'}, morestring=[s]{FR"}{"},
+  morestring=[s]{FR'''}{'''}, morestring=[s]{FR"""}{"""},
+  morestring=[s]{rF'}{'}, morestring=[s]{rF"}{"},
+  morestring=[s]{rF'''}{'''}, morestring=[s]{rF"""}{"""},
+  morestring=[s]{Rf'}{'}, morestring=[s]{Rf"}{"},
+  morestring=[s]{Rf'''}{'''}, morestring=[s]{Rf"""}{"""},
+  morestring=[s]{RF'}{'}, morestring=[s]{RF"}{"},
+  morestring=[s]{RF'''}{'''}, morestring=[s]{RF"""}{"""},
+  % Byte literals (3.10)
+  morestring=[s]{b'}{'}, morestring=[s]{b"}{"},
+  morestring=[s]{b'''}{'''}, morestring=[s]{b"""}{"""},
+  morestring=[s]{br'}{'}, morestring=[s]{br"}{"},
+  morestring=[s]{br'''}{'''}, morestring=[s]{br"""}{"""},
+  morestring=[s]{rb'}{'}, morestring=[s]{rb"}{"},
+  morestring=[s]{rb'''}{'''}, morestring=[s]{rb"""}{"""},
+  morestring=[s]{Br'}{'}, morestring=[s]{Br"}{"},
+  morestring=[s]{Br'''}{'''}, morestring=[s]{Br"""}{"""},
+  morestring=[s]{bR'}{'}, morestring=[s]{bR"}{"},
+  morestring=[s]{bR'''}{'''}, morestring=[s]{bR"""}{"""},
+  morestring=[s]{BR'}{'}, morestring=[s]{BR"}{"},
+  morestring=[s]{BR'''}{'''}, morestring=[s]{BR"""}{"""},
+  morestring=[s]{rB'}{'}, morestring=[s]{rB"}{"},
+  morestring=[s]{rB'''}{'''}, morestring=[s]{rB"""}{"""},
+  morestring=[s]{Rb'}{'}, morestring=[s]{Rb"}{"},
+  morestring=[s]{Rb'''}{'''}, morestring=[s]{Rb"""}{"""},
+  morestring=[s]{RB'}{'}, morestring=[s]{RB"}{"},
+  morestring=[s]{RB'''}{'''}, morestring=[s]{RB"""}{"""},
+  % Escape Sequences
+  alsoletter = {\\newline,\\\\,\\',\\",\\a,\\b,\\f,\\n,\\r,\\t,\\v},
+  moreemph=[242]{\\newline,\\\\,\\',\\",\\a,\\b,\\f,\\n,\\r,\\t,\\v},
+  %
+  % Operators & Delimiters
+  alsoletter={+, -, *, **, \&, /, //, \%, =, @, ~, :=, ==, !=, >, >=, <, <=,
+  +=, -=, *=, /=, \%=, \^, |, ~, >>, <<, <<==, \^==, >>==, **==, |=, \&=, @=,
+  \%=, //=, /==, ;},
+  moreemph=[25]{+, -, *, **, \&, /, //, \%, =, @, ~, :=, ==, !=, >, >=, <, <=,
+  +=, -=, *=, /=, \%=, \^, |, ~, >>, <<, <<==, \^==, >>==, **==, |=, \&=, @=,
+  \%=, //=, /==, ;, @dataclass, @lambda, @abstractmethod, @classmethod,
+  @staticmethod, in, and, not, or, is},
+  %
+  % Functions
+  moreemph=[30]{self, >>>},
+  moreemph=[2512]{%
+  % int type methods
+  bit\_length, bit\_count, to\_bytes, from\_bytes, as\_integer\_ratio,
+  % float type methods
+  is\_integer, fromhex,
+  % iterator types
+  \_\_iter\_\_. \_\_next\_\_,
+  % list Class functions
+  sort, sorted, cmp\_to\_key,
+  % string methods
+  capitalize, casefold, center, count, encode, endswith, find, format,
+  format\_map, index, isalnum, isalpha, isascii, isdecimal, isdigit,
+  isidentifier, islower, isnumeric, isprintable, isspace, istitle, isupper,
+  join, ljust, lower, lstrip, makestrans, partition, removeprefix,
+  removesuffix, replace, rfind, rindex, rjust, rpartition, rsplit, rstrip,
+  split, splitlines, startswith, strip, swapcase, title, translate, upper,
+  zfill,
+  % bytes methods
+  fromhex, hex,
+  % bytes & bytearray ops
+  count, removeprefix, removesuffix, decode, endswith, find, index, join,
+  maketrans, partition, replace, rfind, rindex, rpartition, startswith,
+  translate, center, ljust, lstrip, rjust, rsplit, rstrip, split, strip,
+  capitalize, expandtabs, isalnum, isalpha, isdigit, islower, isspace,
+  isupper, lower, splitlines, swapcase, title, upper, zfill
+  % dict methods
+  del, iter, clear, copy, get, items, keys, pop, popitem, reversed,
+  setdefault, update, values, mapping,
+  % collections methods
+  deque, defaultdict, OrderedDict, Counter, ChainMap, abc, Awaitable,
+  Coroutine, AsyncIterable, AsyncIterator, AsyncGenerator, Iterable, Iterator,
+  Generator, Reversble, Container, Collection, Callable, Set, MutableSet,
+  Mapping, MutableMapping, Sequence, MutableSequence, ByteString, MappingView,
+  KeysView, ItemsView, ValuesView,
+  % contextlib
+  AbstractContextManager, AbstractAsyncContextManager,
+  % pathlib
+  Path,
+  % regex
+  Pattern, Match,
+  % site
+  quit, ext, copyright, credits, license, flags, mentions
+  },
+  moreemph=[31]{array, clip, loc, to\_csv, astype, choice, randint, DataFrame,
+  choices, append, to, split, floor, ceil, trunc},
+  %
+  moreemph=[4]{\_\_name\_\_, \_\_init\_\_, \_\_str\_\_, \_\_repr\_\_,
+  \_\_cmp\_\_, \_\_eq\_\_, \_\_lt\_\_, \_\_le\_\_, \_\_ge\_\_, \_\_gt\_\_, \_,
+  \_\_dict\_\_, \_\_func\_\_, \_\_getattr\_\_, \_\_code\_\_, \_\_class\_\_,
+  \_\_bases\_\_, \_\_qualname\_\_, \_\_mro\_\_, \_\_subclasses\_\_},
+  %
+  % exceptions and errors
+  moreemph=[5]{%
+  % Base exceptions
+  BaseException, Exception, ArithmeticError, BufferError, LookupError,
+  % Concrete exceptions
+  AssertionError, AttributeError, EOFError, GeneratorExit, ImportError,
+  ModuleNotFoundError, IndexError, KeyError, KeyboardInterrupt, MemoryError,
+  NameError, NotImplementedError, OSError, OverflowError, RecursionError,
+  ReferenceError, RuntimeError, StopIteration, StopAyncIteration, SyntaxError,
+  IndentationError, TabError, SystemError, SystemExit, TypeError,
+  UnboundLocalError, UnicodeError, UnicodeEncodeError, UnicodeDecodeError,
+  UnicodeTranslateError, ValueError, ZeroDivisionError, EnvironmentError,
+  IOError, WindowsError,
+  % OS exceptions
+  BlockingIOError, ChildProcessError, ConnectionError, BrokenPipeError,
+  ConnectionAbortedError, ConnectionRefusedError, ConnectionResetError,
+  FileExistsError, FileNotFoundError, InterruptedError, IsADirectoryError,
+  NotADirectoryError, PermissionError, ProcessLookupError, TimeoutError},
+  %
+  %
+  % Common modules
+  moreemph=[999]{%
+  % standard modules
+  % a-c
+  asyncio,collections, contextlib,
+  % d-j
+  discord,json,
+  % k-o
+  logging,math,os,
+  % p-s
+  pathlib,random,re, site,
+  % t-z
+  time, timeit,
+  % other
+  matplotlib, np, numpy, pandas, pd, plt, pyplot},
+  %
+  emphstyle=[231]{\color{magenta}}, % keywords
+  emphstyle=[241]{\color{magenta}}, % str/byt literals
+  emphstyle=[242]{\color{magenta}}, % esc seqs
+  emphstyle=[25]{\color{brightcyan}}, % operators
+  emphstyle=[2512]{\color{brightblue}}, % type methods
+  emphstyle=[30]{\color{brightcyan}},
+  emphstyle=[31]{\color{brightblue}}, % functions
+  emphstyle=[4]{\color{brightmagenta}},
+  emphstyle=[5]{\bfseries\color{red}},
+  emphstyle=[999]{\color{brightyellow}}, % modules
+  %
+  breaklines=true,
+  prebreak=\mbox{{\color{brightblack}\scriptsize$\searrow$}},
+}
+\newtcblisting{bash}{
+	before skip=0pt,
+	after skip=0pt,
+	colback=bg,
+	listing only,
+	listing options={%
+		columns=fullflexible,
+		style=leobash
+	},
+	% every listing line={%
+	%   \textcolor{magenta}{bash}\textcolor{green}{\bfseries\$}
+	% }
+	}
+\newtcblisting{python}{
+	colback=bg,
+	listing only,
+	listing options={
+		style=leopython
+	}
+}

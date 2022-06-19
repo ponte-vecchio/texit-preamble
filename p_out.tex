@@ -1,0 +1,873 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%      ORIGINAL AUTHOR:  LEOTHELION
+%   VERSION (YYYY.MMA):  2022.06F
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% SHORTCUTS
+\edef\tmp{\catcode`@\the\catcode`@ \space}\makeatletter
+\let\exaf\expandafter
+\let\ifpkg\@ifpackageloaded
+
+% LOADTIME.TEX
+\newtoks\files@list
+\newcount\files@level
+
+\AddToHook{file/before}{%
+	\expandafter\xdef\csname file@time@\CurrentFile\endcsname{\the\pdfelapsedtime}%
+	\expandafter\xdef\csname file@level@\CurrentFile\endcsname{\the\files@level}%
+	\global\advance\files@level\@ne
+	\global\files@list\expanded{{\the\files@list{\CurrentFile}}}%
+}
+
+\AddToHook{file/after}{%
+	%  Do not do anything if unbalanced.
+	%+ This can happen if this code itself is inside an \input.
+	\ifcsname file@time@\CurrentFile\endcsname
+	\global\advance\files@level\m@ne
+	\expandafter\xdef\csname file@time@\CurrentFile\endcsname
+	{\the\numexpr\pdfelapsedtime-\csname file@time@\CurrentFile\endcsname}%
+	\fi
+}
+
+\protected\def\loadtime{\fileinfoA\fileinfoB\relax}
+\def\fileinfoA#1#2{%
+	\begingroup \par \ttfamily \scriptsize
+	\expandafter\fileinfoB \the\files@list \relax%
+	\endgroup
+}
+
+\def\fileinfoB#1{\ifx\relax#1\expandafter\@gobblethree \fi \fileinfoC{#1}\fileinfoB}
+
+\def\fileinfoC#1{\hbox to\hsize{%
+		%  CM doesn't have bold tt, FiraMono does.
+		\ifnum\csname file@level@#1\endcsname=\z@ \bfseries \fi
+		\hbox to4em{\hss \csname file@time@#1\endcsname\quad}%
+		\count@\csname file@level@#1\endcsname \relax
+		\loop \ifnum\count@>\z@
+		\qquad
+		\advance\count@\m@ne
+		\repeat
+		#1\hfil
+}}
+
+\tmp
+
+% MATH.TEX
+\usepackage{amsthm, amssymb}
+\usepackage{mathtools, mathrsfs, esvect}  % extension to amsmath
+% \usepackage[total={6.5in, 9.5in}]{geometry}
+\usepackage{siunitx}
+\usepackage{IEEEtrantools}
+
+% FONTS.TEX
+\usepackage[fontsize = 10pt]{scrextend}
+\usepackage[utf8]{inputenc}
+\usepackage[finemath]{kotex}
+\usepackage{dhucs-nanumfont, dhucs-trivcj}
+\usepackage{CJKutf8, pxrubrica}
+\long\protected\def\cjkrm#1{\begin{CJK}{UTF8}{ipxm} {\color{fg}#1}\end{CJK}}% rm
+\long\protected\def\cjksf#1{\begin{CJK}{UTF8}{ipxg} {\color{fg}#1}\end{CJK}}% sf
+\newcommand{\cjk}[2][ipxm]{\begin{CJK}{UTF8}{#1}{\color{fg}#2}\end{CJK}}% general
+\usepackage{fontawesome5}
+% \usepackage{mls}
+\usepackage{ctib} % bod skad
+\usepackage[scaled=.95]{cabin}
+\usepackage[T1, T2A]{fontenc}
+\usepackage[stix2,vvarbb,frenchmath]{newtxmath}
+\usepackage[lining,scaled=0.92]{FiraMono}
+% \usepackage[scaled=0.92]{cascadia-code} % default tt for TexLive2021
+
+% MATCHCASE.TEX
+\usepackage{xparse}
+%%%%%%%%%
+% match case
+% https://tex.stackexchange.com/questions/386280/switch-case-condition/386307
+\ExplSyntaxOn
+
+\msg_new:nnn
+{ switchcase }
+{ no-match }
+{ There~is~no~entry~`#1'~in~the~switch~statement! }
+
+\NewDocumentCommand\matchcase{ m m }
+{
+	\str_case:nnF { #1 } { #2 } { \msg_error:nnn { switchcase } { no-match } { #1 } }
+}
+
+\ExplSyntaxOff
+
+% Lorem ims
+\newcommand\ipsum[1]{%
+	\matchcase{#1}%
+	{
+		{}{{Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.}}
+		{jp}{\cjksf{いづれの御時にか　女御更衣あまたさぶらひたまひけるなかに　いとやむごとなき際にはあらぬが　すぐれて時めきたまふ　ありけり　はじめより　我はと思ひあがりたまへる御方々　めざましきものにおとしめ嫉みたまふ}}
+		{ko}{{어머님, 나는 별 하나에 아름다운 말 한 마디씩 불러 봅니다. 소학교 때 책상을 같이했던 아이들의 이름과, 패, 경, 옥 이런 이국 소녀들의 이름과, 벌써 아기 어머니 된 계집애들의 이름과, 가난한 이웃 사람들의 이름과, 비둘기, 강아지, 토끼, 노새, 노루, `프랑시스 잠', `라이너 마리아 릴케', 이런 시인의 이름을 불러 봅니다.}}
+		{zh}{{\cjk[bkai]{属教患席国柳画写挙会任言仮橋田書川能進止.\ 部亡工読演整禁演択話介下.\ 彼聴米権保形多責業表滞薬響避冷柱挙見原.\ 外情関茂覚郵払表年供聞者写政耶芸撃設推.\ 合品可真盗度止光格記治天惑供断告.丸調女話電届統務北予読転悠要話本.\ 供田必処下稿跡真実功着札.\ 形出断技馬出氏最事辺香燃計川周証集合.\ 改川円加手告情写試賀活績持域台囲.}}}
+		{tb}{{\scriptsize\tib\swasti. .yul zhig na bram ze dbyug pa can zhes bya zhig 'dug ste. rab du dbul 'phongs pa bza' ba dang,. bgo med pa zhig go. des khyim bdag cig las ba glang zhig b-rnyes te. nyin par spyad nas ba glang de khrid de khyim bdag de'i khyim du song ba dang,. de na khyim bdag ni zan za ste. dbyug pa can gyis ba glang de khyim gyi nang du btang ba dang,. ba glang sgo gzhan du song nas stor ro.. khyim bdag de zan de zos nas langs pa dang,. de na ba glang ma mthong nas des dbyug pa can la glang ga re zhes byas pa dang,. des smras pa. khyod kyi khyim du btang ngo,. .khyod kyis nga'i glang bor gyis slar byin cig ces smras pa dang,. des smras pa. ngas ma bor ro.. de nas de gnyis 'grogs te. rgyal po'i thad du 'dong ba dang,. 'u bu cag gi rigs pa dang mi rigs pa rtog par 'gyur ro zhes smras nas de gnyis dong ba dang,. mi gzhan zhig gi rta rgod ma zhig bros nas. des dbyug pa can la smras pa. rgod ma ma btang zhes smras pa dang,. des rdo zhig blangs te 'phangs pa dang rta'i rkang pa la phog nas rkan}}
+	}%
+}
+
+% CYRILLIC.TEX
+\protected\def\latinalphabet{a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
+\protected\def\rusalphabet{а, б, в, г, д, е, ё, ж, з, и, й, к, л, м, н, о, п, р, с, т, у, ф, х, ц, ч, ш, щ, ъ, ы, ь, э, ю, я}
+\protected\def\kazalphabet{а, ә, б, в, г, ғ, д, е, ё, ж, з, и, й, к, қ, л, м, н, ң, о, ө, п, р, с, т, у, ұ, ү, ф, х, һ, ц, ч, ш, щ, ъ, ы, і, ь, э, ю, я}
+\makeatletter
+\newcommand{\kir}{\@ifstar{\kir@query}{\kir@random}}
+\newcommand{\kir@query}[2][larm1000]{
+  \setbox0=\hbox{#1\unskip}%
+  \ifdim\wd0=0pt
+    \errmessage{No font name given. Use the non-starred version instead?}%
+  \else \font\cyr@selected=#1%
+  \fontencoding{T2A}\cyr@selected #2%
+  \fi
+}
+\newcommand{\kir@random}[1]{%
+  \def\n@ms{\pdfuniformdeviate 12}
+  \ifcase\n@ms \font\cyr@selected=andk-tlf-t2a
+  \or \font\cyr@selected=Comfortaa-Light-T2A%
+  \or \font\cyr@selected=DroidSerif-Regular-T2A%
+  \or \font\cyr@selected=miama-t2a%
+  \or \font\cyr@selected=charssil-tlf-t2a%
+  \or \font\cyr@selected=ClaraRegular-tlf-sc-t2a%
+  \or \font\cyr@selected=OldStandard-Regular-tlf-t2a%
+  \or \font\cyr@selected=LibertinusSerif-Regular-tlf-t2a%
+  \or \font\cyr@selected=Tempora-Regular-TLF-t2a%
+  \or \font\cyr@selected=Cantarell-Regular-T2A-LF%
+  \else \font\cyr@selected=larm1000
+  \fi
+  \fontencoding{T2A}\cyr@selected #1%
+}
+\newcommand{\cyrtest}{\@ifstar{\CT@Q}{\CT@R}}
+\newcommand{\CT@Q}[1]{%
+  \def\cyr@head##1{{\bfseries ##1}\vskip.5em}
+  \long\def\cyr@box##1{\foreach \k in ##1{\makebox[1.4em][r]{\MakeUppercase{\k}}\kern2pt\makebox[1.1em][l]{\k}
+  }\medskip}
+  {\centering\cyr@head{\Large T2A}}
+
+  \kir*[#1]{%
+    \centering \fontname\the\font\vskip.5em
+
+    \cyr@head{Base}\cyr@box{\rusalphabet}
+
+    \cyr@head{Additional}\cyr@box{{ғ, ң, ө, ұ, һ, і, ә, җ, ў, ү}}
+
+  }
+}
+\newcommand{\CT@R}{%
+  \def\cyr@head##1{{\bfseries ##1}\vskip.5em}
+  \long\def\cyr@box##1{\foreach \k in ##1{\makebox[1.4em][r]{\MakeUppercase{\k}}\kern2pt\makebox[1.1em][l]{\k}
+  }\medskip}
+  {\centering\cyr@head{\Large T2A}}
+
+  \kir{%
+    \centering \fontname\the\font\vskip.5em
+
+    \cyr@head{Base}\cyr@box{\rusalphabet}
+
+    \cyr@head{Additional}\cyr@box{{ғ, ң, ө, ұ, һ, і, ә, җ, ў, ү}}
+
+  }
+}
+
+% DRAW.TEX
+% Tikz and Pgfplots
+\usepackage{tikz}
+\usepackage{pgfplots,pgfplotstable}
+\pgfplotsset{%
+	compat=1.17,
+	tick label style = {font=\scriptsize},
+	every axis label = {font=\footnotesize},
+	legend style = {font=\footnotesize},
+	label style = {font=\footnotesize}
+}%
+\pgfkeys{/pgf/number format/.cd,1000 sep={}}
+
+% Others
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable, listings}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{colortbl} % add colour to tables
+\usepackage{tabularx} % superior tabula
+\usepackage{subcaption} % subtables
+\usepackage{booktabs}
+\usepackage{graphicx}
+\setlength{\fboxrule}{0.075pt}
+
+% CHEMISTRY.TEX
+\usepackage[version=4]{mhchem}
+\usepackage{chemfig}
+\setchemfig{atom sep=2em}
+\renewcommand*\printatom[1]{\footnotesize \ensuremath{\mathsf{#1}}}
+
+% COLOURSCHEME.TEX
+%\def\Template{
+%	\definecolor{fg}{HTML}{}
+%	\definecolor{bg}{HTML}{}
+%	\definecolor{black}{HTML}{}
+%	\definecolor{red}{HTML}{}
+%	\definecolor{green}{HTML}{}
+%	\definecolor{yellow}{HTML}{}
+%	\definecolor{blue}{HTML}{}
+%	\definecolor{magenta}{HTML}{}
+%	\definecolor{cyan}{HTML}{}
+%	\definecolor{white}{HTML}{}
+%	\definecolor{brightblack}{HTML}{}
+%	\definecolor{brightred}{HTML}{}
+%	\definecolor{brightgreen}{HTML}{}
+%	\definecolor{brightyellow}{HTML}{}
+%	\definecolor{brightblue}{HTML}{}
+%	\definecolor{brightmagenta}{HTML}{}
+%	\definecolor{brightcyan}{HTML}{}
+%	\definecolor{brightwhite}{HTML}{}
+%}
+
+% REDS
+\def\applereds{lavender,bubblegum,carnation,salmon,maraschino,cayenne,mocha,
+tangerine,cantaloupe,plum,maroon}
+\definecolor{lavender}{HTML}{D783FF}
+\definecolor{bubblegum}{HTML}{FF85FF}
+\definecolor{carnation}{HTML}{FF8AD8}
+\definecolor{salmon}{HTML}{FF7E79}
+\definecolor{maraschino}{HTML}{FF2600}
+\definecolor{cayenne}{HTML}{941100}
+\definecolor{mocha}{HTML}{945200}
+\definecolor{tangerine}{HTML}{FF9300}
+\definecolor{cantaloupe}{HTML}{FFD479}
+\definecolor{plum}{HTML}{942193}
+\definecolor{maroon}{HTML}{941751}
+% GREENS
+\def\applegreens{asparagus,fern,teal,flora,honeydew,seafoam}
+\definecolor{asparagus}{HTML}{929000}
+\definecolor{fern}{HTML}{4F8F00}
+\definecolor{teal}{HTML}{009193}
+\definecolor{flora}{HTML}{73FA79}
+\definecolor{honeydew}{HTML}{D4FB79}
+\definecolor{seafoam}{HTML}{00FA92}
+% BLUES
+\def\appleblues{turquoise,ocean,midnight,eggplant,aqua,blueberry,spindrift,
+orchid}
+\definecolor{turquoise}{HTML}{00FDFF}
+\definecolor{ocean}{HTML}{005493}
+\definecolor{midnight}{HTML}{011993}
+\definecolor{eggplant}{HTML}{531B93}
+\definecolor{aqua}{HTML}{0096FF}
+\definecolor{blueberry}{HTML}{0433FF}
+\definecolor{spindrift}{HTML}{73FCD6}
+\definecolor{orchid}{HTML}{7A81FF}
+% GREYSCALE
+\def\applegreys{liquorice,tungsten,iron,tin,silver,magnesium,mercury}
+\definecolor{liquorice}{HTML}{000000}
+\definecolor{tungsten}{HTML}{424242}
+\definecolor{iron}{HTML}{5E5E5E}
+\definecolor{tin}{HTML}{919191}
+\definecolor{silver}{HTML}{A3A3A3}
+\definecolor{magnesium}{HTML}{C0C0C0}
+\definecolor{mercury}{HTML}{EBEBEB}
+
+\def\AyuMirage{
+	\definecolor{fg}{HTML}{d9d7ce}
+	\definecolor{bg}{HTML}{212733}
+	\definecolor{black}{HTML}{191e2a}
+	\definecolor{red}{HTML}{ed8274}
+	\definecolor{green}{HTML}{a6cc70}
+	\definecolor{yellow}{HTML}{fad07b}
+	\definecolor{blue}{HTML}{6dcbfa}
+	\definecolor{magenta}{HTML}{cfbafa}
+	\definecolor{cyan}{HTML}{90e1c6}
+	\definecolor{white}{HTML}{c7c7c7}
+	\definecolor{brightblack}{HTML}{686868}
+	\definecolor{brightred}{HTML}{f28779}
+	\definecolor{brightgreen}{HTML}{bae67e}
+	\definecolor{brightyellow}{HTML}{ffd580}
+	\definecolor{brightblue}{HTML}{73d0ff}
+	\definecolor{brightmagenta}{HTML}{d4bfff}
+	\definecolor{brightcyan}{HTML}{95e6cb}
+	\definecolor{brightwhite}{HTML}{ffffff}
+	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
+}
+\def\Breeze{
+	\definecolor{bg}{HTML}{1E2229}\definecolor{fg}{HTML}{BBBBBB}
+	\definecolor{black}{HTML}{1E2229}\definecolor{brightblack}{HTML}{7F8C8D}
+	\definecolor{red}{HTML}{ED1515}\definecolor{brightred}{HTML}{C0392B}
+	\definecolor{green}{HTML}{44853A}\definecolor{brightgreen}{HTML}{55A649}
+	\definecolor{yellow}{HTML}{F67400}\definecolor{brightyellow}{HTML}{FDBC4B}
+	\definecolor{blue}{HTML}{1D99F3}\definecolor{brightblue}{HTML}{3DAEE9}
+	\definecolor{magenta}{HTML}{9B59B6}\definecolor{brightmagenta}{HTML}{8E43AD}
+	\definecolor{cyan}{HTML}{1ABC9C}\definecolor{brightcyan}{HTML}{16A085}
+	\definecolor{white}{HTML}{FCFCFC}\definecolor{brightwhite}{HTML}{FFFFFF}
+	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
+}
+\def\Chameleon{
+	\definecolor{fg}{HTML}{dceec8}
+	\definecolor{bg}{HTML}{173f4f}
+	\definecolor{black}{HTML}{173f4f}
+	\definecolor{red}{HTML}{dc3545}
+	\definecolor{green}{HTML}{73ba25}
+	\definecolor{yellow}{HTML}{ffc107}
+	\definecolor{blue}{HTML}{38ade2}
+	\definecolor{magenta}{HTML}{1aad95}
+	\definecolor{cyan}{HTML}{4ac0b4}
+	\definecolor{white}{HTML}{eeeeee}
+	\definecolor{brightblack}{HTML}{365f6f}
+	\definecolor{brightred}{HTML}{c86663}
+	\definecolor{brightgreen}{HTML}{6da741}
+	\definecolor{brightyellow}{HTML}{ffc107}
+	\definecolor{brightblue}{HTML}{21a4df}
+	\definecolor{brightmagenta}{HTML}{81c13b}
+	\definecolor{brightcyan}{HTML}{00a489}
+	\definecolor{brightwhite}{HTML}{ffffff}
+	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
+}
+% \def\Dracula{
+% 	\definecolor{bg}{HTML}{282A36}\definecolor{fg}{HTML}{F8F8F2}
+% 	\definecolor{black}{HTML}{21222C}\definecolor{brightblack}{HTML}{6272A4}
+% 	\definecolor{red}{HTML}{FF5555}\definecolor{brightred}{HTML}{FF6E6E}
+% 	\definecolor{green}{HTML}{50FA7B}\definecolor{brightgreen}{HTML}{69FF94}
+% 	\definecolor{yellow}{HTML}{F1FA8C}\definecolor{brightyellow}{HTML}{FFFFA5}
+% 	\definecolor{blue}{HTML}{BD93F9}\definecolor{brightblue}{HTML}{D6ACFF}
+% 	\definecolor{magenta}{HTML}{FF79C6}\definecolor{brightmagenta}{HTML}{FF92DF}
+% 	\definecolor{cyan}{HTML}{8BE9FD}\definecolor{brightcyan}{HTML}{A4FFFF}
+% 	\definecolor{white}{HTML}{F8F8F2}\definecolor{brightwhite}{HTML}{FFFFFF}
+% 	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
+% }
+\def\Google{
+	\definecolor{fg}{HTML}{373b41}\definecolor{bg}{HTML}{FFFFFF}
+	\definecolor{black}{HTML}{1d1f21}\definecolor{brightblack}{HTML}{969896}
+	\definecolor{red}{HTML}{cc342b}\definecolor{brightred}{HTML}{cc342b}
+	\definecolor{green}{HTML}{198844}\definecolor{brightgreen}{HTML}{198844}
+	\definecolor{yellow}{HTML}{fba922}\definecolor{brightyellow}{HTML}{fba922}
+	\definecolor{blue}{HTML}{3971ed}\definecolor{brightblue}{HTML}{3971ed}
+	\definecolor{magenta}{HTML}{a36ac7}\definecolor{brightmagenta}{HTML}{a36ac7}
+	\definecolor{cyan}{HTML}{3971ed}\definecolor{brightcyan}{HTML}{3971ed}
+	\definecolor{white}{HTML}{c5c8c6}\definecolor{brightwhite}{HTML}{FFFFFF}
+	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
+}
+\def\Gruvbox{
+	\definecolor{bg}{HTML}{282828}\definecolor{fg}{HTML}{ebdbb2}
+	\definecolor{black}{HTML}{282828}\definecolor{brightblack}{HTML}{928374}
+	\definecolor{red}{HTML}{cc241d}\definecolor{brightred}{HTML}{fb4934}
+	\definecolor{green}{HTML}{98971a}\definecolor{brightgreen}{HTML}{b8bb26}
+	\definecolor{yellow}{HTML}{d79921}\definecolor{brightyellow}{HTML}{fabd2f}
+	\definecolor{blue}{HTML}{458588}\definecolor{brightblue}{HTML}{83a598}
+	\definecolor{magenta}{HTML}{b16286}\definecolor{brightmagenta}{HTML}{d3869b}
+	\definecolor{cyan}{HTML}{689d6a}\definecolor{brightcyan}{HTML}{8ec07c}
+	\definecolor{white}{HTML}{a89984}\definecolor{brightwhite}{HTML}{ebdbb2}
+	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
+}
+% \def\Moe{
+% 	\definecolor{bg}{HTML}{131313}\definecolor{fg}{HTML}{788CA1}
+% 	\definecolor{black}{HTML}{2B2B2B}\definecolor{brightblack}{HTML}{262626}
+% 	\definecolor{red}{HTML}{FF5858}\definecolor{brightred}{HTML}{FF597D}
+% 	\definecolor{green}{HTML}{2FBEBC}\definecolor{brightgreen}{HTML}{2FBEBC}
+% 	\definecolor{yellow}{HTML}{3BAFE4}\definecolor{brightyellow}{HTML}{369ECF}
+% 	\definecolor{blue}{HTML}{FF5858}\definecolor{brightblue}{HTML}{FF6376}
+% 	\definecolor{magenta}{HTML}{C679DD}\definecolor{brightmagenta}{HTML}{C678DD}
+% 	\definecolor{cyan}{HTML}{FF6376}\definecolor{brightcyan}{HTML}{FF6376}
+% 	\definecolor{white}{HTML}{3E4F58}\definecolor{brightwhite}{HTML}{324047}
+% 	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
+% }
+\def\Nord{
+	\definecolor{bg}{HTML}{2E3440}
+	\definecolor{fg}{HTML}{D8DEE9}
+	\definecolor{black}{HTML}{3B4252}
+	\definecolor{red}{HTML}{BF616A}
+	\definecolor{green}{HTML}{A3BE8C}
+	\definecolor{yellow}{HTML}{EBCB8B}
+	\definecolor{blue}{HTML}{81A1C1}
+	\definecolor{magenta}{HTML}{B48EAD}
+	\definecolor{cyan}{HTML}{88C0D0}
+	\definecolor{white}{HTML}{E5E9F0}
+	\definecolor{brightblack}{HTML}{4C566A}
+	\definecolor{brightred}{HTML}{BF616A}
+	\definecolor{brightgreen}{HTML}{A3BE8C}
+	\definecolor{brightyellow}{HTML}{EBCB8B}
+	\definecolor{brightblue}{HTML}{81A1C1}
+	\definecolor{brightmagenta}{HTML}{B48EAD}
+	\definecolor{brightcyan}{HTML}{8FBCBB}
+	\definecolor{brightwhite}{HTML}{ECEFF4}
+	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
+}
+\def\Radical{
+	\definecolor{bg}{HTML}{141322}\definecolor{fg}{HTML}{A0CDCF}
+	\definecolor{black}{HTML}{1F216F}\definecolor{brightblack}{HTML}{290cad}
+	\definecolor{red}{HTML}{ff448a}\definecolor{brightred}{HTML}{ff326f}
+	\definecolor{green}{HTML}{d3ff3f}\definecolor{brightgreen}{HTML}{c2ff00}
+	\definecolor{yellow}{HTML}{fffc72}\definecolor{brightyellow}{HTML}{f7d338}
+	\definecolor{blue}{HTML}{4c4de4}\definecolor{brightblue}{HTML}{0c19ae}
+	\definecolor{magenta}{HTML}{f853b1}\definecolor{brightmagenta}{HTML}{d02583}
+	\definecolor{cyan}{HTML}{b2f6fc}\definecolor{brightcyan}{HTML}{a0fef7}
+	\definecolor{white}{HTML}{c9eee6}\definecolor{brightwhite}{HTML}{c5fff0}
+	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
+}
+% \def\Shizuka{
+% 	\definecolor{bg}{HTML}{151219}\definecolor{fg}{HTML}{EADCE3}
+% 	\definecolor{black}{HTML}{151219}\definecolor{brightblack}{HTML}{9C9097}
+% 	\definecolor{red}{HTML}{A18E95}\definecolor{brightred}{HTML}{A18E95}
+% 	\definecolor{green}{HTML}{D195A4}\definecolor{brightgreen}{HTML}{D195A4}
+% 	\definecolor{yellow}{HTML}{C99F9C}\definecolor{brightyellow}{HTML}{C99F9C}
+% 	\definecolor{blue}{HTML}{E0C3AA}\definecolor{brightblue}{HTML}{E0C3AA}
+% 	\definecolor{magenta}{HTML}{CEB3D7}\definecolor{brightmagenta}{HTML}{CEB3D7}
+% 	\definecolor{cyan}{HTML}{E1C0D7}\definecolor{brightcyan}{HTML}{E1C0D7}
+% 	\definecolor{white}{HTML}{EADCE3}\definecolor{brightwhite}{HTML}{EADCE3}
+% 	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
+% }
+\def\SolarisedDark{
+	%SOLARIZED HEX     16/8 TERMCOL  XTERM/HEX   L*A*B      sRGB        HSB
+	%--------- ------- ---- -------  ----------- ---------- ----------- -----------
+	%base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
+	%base02    #073642  0/4 black    235 #262626 20 -12 -12   7  54  66 192  90  26
+	%base01    #586e75 10/7 brgreen  240 #4e4e4e 45 -07 -07  88 110 117 194  25  46
+	%base00    #657b83 11/7 bryellow 241 #585858 50 -07 -07 101 123 131 195  23  51
+	%base0     #839496 12/6 brblue   244 #808080 60 -06 -03 131 148 150 186  13  59
+	%base1     #93a1a1 14/4 brcyan   245 #8a8a8a 65 -05 -02 147 161 161 180   9  63
+	%base2     #eee8d5  7/7 white    254 #d7d7af 92 -00  10 238 232 213  44  11  93
+	%base3     #fdf6e3 15/7 brwhite  230 #ffffd7 97  00  10 253 246 227  44  10  99
+	%yellow    #b58900  3/3 yellow   136 #af8700 60  10  65 181 137   0  45 100  71
+	%orange    #cb4b16  9/3 brred    166 #d75f00 50  50  55 203  75  22  18  89  80
+	%red       #dc322f  1/1 red      160 #d70000 50  65  45 220  50  47   1  79  86
+	%magenta   #d33682  5/5 magenta  125 #af005f 50  65 -05 211  54 130 331  74  83
+	%violet    #6c71c4 13/5 brmagenta 61 #5f5faf 50  15 -45 108 113 196 237  45  77
+	%blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
+	%cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
+	%green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
+	\definecolor{bg}{HTML}{073642}\definecolor{fg}{HTML}{93a1a1}
+	\definecolor{black}{HTML}{073642}\definecolor{brightblack}{HTML}{002b36}
+	\definecolor{red}{HTML}{dc322f}\definecolor{brightred}{HTML}{cb4b16}
+	\definecolor{green}{HTML}{859900}\definecolor{brightgreen}{HTML}{586e75}
+	\definecolor{yellow}{HTML}{b58900}\definecolor{brightyellow}{HTML}{657b83}
+	\definecolor{blue}{HTML}{268bd2}\definecolor{brightblue}{HTML}{839496}
+	\definecolor{magenta}{HTML}{d33682}\definecolor{brightmagenta}{HTML}{6c71c4}
+	\definecolor{cyan}{HTML}{2aa198}\definecolor{brightcyan}{HTML}{93a1a1}
+	\definecolor{white}{HTML}{eee8d5}\definecolor{brightwhite}{HTML}{fdf6e3}
+	\color{fg}\pagecolor{bg}
+}
+\def\SolarisedLight{
+	\SolarisedDark
+	\definecolor{bg}{HTML}{fdf6e3}\definecolor{fg}{HTML}{586e75}
+	\color{fg}\pagecolor{bg}
+}
+\def\Transrights{
+	\definecolor{bg}{HTML}{1D1F21}\definecolor{fg}{HTML}{959896}
+	\definecolor{black}{HTML}{1D1F21}\definecolor{brightblack}{HTML}{666666}
+	\definecolor{red}{HTML}{C479A2}\definecolor{brightred}{HTML}{C479A2}
+	\definecolor{green}{HTML}{EDA5CD}\definecolor{brightgreen}{HTML}{EDA5CD}
+	\definecolor{yellow}{HTML}{D6C7E8}\definecolor{brightyellow}{HTML}{D6C7E8}
+	\definecolor{blue}{HTML}{D6C7E8}\definecolor{brightblue}{HTML}{D6C7E8}
+	\definecolor{magenta}{HTML}{6D82D1}\definecolor{brightmagenta}{HTML}{6D82D1}
+	\definecolor{cyan}{HTML}{9AC7F8}\definecolor{brightcyan}{HTML}{9AC7F8}
+	\definecolor{white}{HTML}{FFFFFF}\definecolor{brightwhite}{HTML}{FFFFFF}
+	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
+}
+
+\def\randomTheme{\pdfuniformdeviate 15}%=total number of themes
+\ifcase\randomTheme
+	\AyuMirage
+	\or \Breeze%
+	\or \Google%
+	% \or \Dracula%
+	\or \Gruvbox%
+	% \or \Moe%
+	\or \Nord%
+	\or \Radical%
+	% \or \Shizuka%
+	\or \SolarisedDark%
+	\or \SolarisedLight%
+	\or \Transrights%
+	\else \Chameleon%
+\fi
+
+% HIGHLIGHT.TEX
+\usepackage{listings}
+\newcommand{\cat}[2][]{\lstinputlisting[#1]{#2}}
+\lstset{
+	basicstyle=\ttfamily\color{fg},
+	keywordstyle=\color{yellow},
+	numberstyle=\ttfamily\small\color{red},
+	stringstyle=\color{magenta},
+	commentstyle=\color{green},
+	showstringspaces=false,
+	breaklines=true,
+	tab=$\color{blue!40!bg}\to$,
+	showtabs,
+	numbers=left,
+	numbersep=5pt,
+	prebreak=\mbox{{\color{gray}\tiny$\searrow$}},
+}
+% BASH.PRF
+\lstdefinestyle{leobash}{%
+  language=Bash,
+  keywordstyle=\bfseries\color{yellow},
+  basicstyle=\scriptsize\ttfamily\color{fg},
+  numberstyle=\scriptsize\ttfamily\bfseries\color{yellow!50!red},
+  stringstyle=\color{green},
+  commentstyle=\itshape\color{green!70!bg},
+  sensitive,
+  tabsize=2,
+  tab=$\color{blue!40!bg}\to$,
+  showtabs,
+  numbers=left,
+  numbersep=5pt,
+  % Keywords from GNU Coreutils
+  moreemph=[2]{alias, apropos, apt, apt-get, aptitude, aspell, at, awk,
+  basename, base32, base64, bash, bc, bg, bind, breka, builtin, bzip2,
+  cal,caller,cat,cd,cfdisk,chattr,chgrp,chmod,chown,chpasswd,chroot,
+  chkconfig,cksum,clear,cmp,comm,command,continue,cp,cpio,cron,crontab,csplit,
+  curl,cut,date,dc,dd,ddrescue,declare,df,diff,diff3,dig,dir,dircolors,
+  dirname,dirs,dos2unix,dmesg,dpkg,du,echo,egrep,eject,enable,env,ethtool,
+  eval,exec,exit,expect,expand,export,expr,false,fdformat,fdisk,fg,fgrep,
+  file,fine,fmt,fold,for,format,free,fsck,ftp,function,fuser,gawk,getopts,
+  grep,groupadd,groupdel,groupmod,groups,gzip,hash,head,help,history,hostname,
+  htop,iconv,id,ifconfig,ifdown,ifup,import,install,iostat,ip,jobs,join,
+  kill,killall,less,let,link,ln,local,locate,logname,logout,look,lpc,lpr,
+  lprint,lprintd,lprintq,lprm,lsattr,lsblk,ls,lsof,lspci,make,man,mapfile,
+  mkdir,mkfifo,mkfile,mkisofs,mknod,mktemp,more,most,mount,mtools,mtr,mv,mmv,
+  nc,netstat,nft,nice,nl,nohup,notify-send,nslookup,open,op,passwd,paste,
+  pathchk,perf,ping,pgrep,pkill,popd,pr,printcap,printenv,printf,ps,pushd,pv,
+  pwd,quota,quotacheck,ram,rar,rcp,read,readarray,readonly,reboot,rename,
+  renice,remsync,return,rev,rm,rmdir,rsync,screen,scp,sdiff,sed,select,seq,
+  set,sftp,shift,shopt,shuf,shutdown,sleep,slocate,sort,source,split,ss,ssh,
+  stat,strace,su,sudo,sum,suspend,sync,tail,tar,tee,test,time,timeout,times,
+  tmux,touch,top,tput,traceroute,trap,tr,true,tsort,tty,type,ulimit,umask,
+  umount,unalias,uname,unexpand,uniq,units,unix2dos,unrar,unset,unshar,until,
+  uptime,useradd,userdel,usermod,users,uuencode,uudecode,v,vdir,vi,vim,vmstat,
+  w,wait,watch,wc,whereis,which,while,who,whoami,wget,write,xargs,xdg-open,
+  xxd,xz,yes,zip,@@, \#\#\#,xhost,gunzip,uncompress,unzip,bunzip2,7z},
+  % ArchLinux commands
+  moreemph=[2]{pacman,makepkg,pactree,pacstrap,netctl,mkinitcpio,modprobe,
+  pacman-key,paru,yay,pkgfile,git,makepkg},
+  % Delims
+  % Operators and Args
+  alsoletter={+,+=,-,-=,*,*=,**,/,/=,\%,\%=,++,--,\&\&,||,!,?,\&,\&=,|,|=,\^,
+  \^=,~,<<,<<=,>>,>>=,<<<,<,<=,=,==,!=,>,>=,[,],[[,]],];,]];,\&>},
+  moreemph=[3]{+,+=,-,-=,*,*=,**,/,/=,\%,\%=,++,--,\&\&,||,!,?,\&,\&=,|,|=,\^,
+  \^=,~,<<,<<=,>>,>>=,<<<,<,<=,=,==,!=,>,>=,-z,-n,-a,-o,-e,-f,-s,-d,-c,-p,-h,
+  -L,-S,-t,-r,-w,-x,-g,-u,-k,-O,-G,-N,-nt,-ot,-ef,[,],[[,]],];,]];,\&>},
+  % pacman flags
+  moreemph=[4]{-S,-Rs,-Ss,-Syu,-Sc,-Scc,-Qdtq,-Qmq,-Rs,-D,-Sw,-Si,-Qi,-Fl,-Qo,
+  -Ql,-F,-Qc,-Ss,-Qu,-Sl,-Q,-Qm,-Qs,-Qtt,-Qe,-Qd,-Sii,-Qii,-Qk,-Dk,-Qp, -Qpl,
+  -U,--asexplicit},
+  % git commands
+  moreemph=[5]{%
+  % Main porcelain commands
+    add,am,archive,bisect,branch,bundle,checkout,cherry-pick,
+    citool,clean,clone,commit,describe,diff,fetch,format-patch,gc,grep,gui,
+    init,log,maintenance,merge,mv,notes,pull,push,range-diff,rebase,reset,
+    revert,rm,shortlog,show,sparse-checkout,stash,status,submodule,switch,tag,
+    worktree,gitk,
+    % Ancillary porcelain commands
+    config,fast-export,fast-import,filter-branch,mergetool,pack-refs,prune,
+    reflog,remote,repack,replace,annotate,blame,bugreport,count-objects,
+    difftool,fsck,help,instaweb,merge-tree,rerere,show-branch,verift-commit,
+    verify-tag,whatchanged,gitweb
+    % Interacting
+    archimport,cvsexportcommit,cvsimport,cvsserver,imap-send,p4,quiltimport,
+    request-pull,send-email,svn,
+    % REset REstore REvert
+    revert,restore,reset,
+  % Plumbing commands
+    apply,checkout-index,commit-graph,commit-tree,hash-object,index-pack,
+    merge-file,merge-index,mktag,mktree,multi-pack-index,pack-objects,
+    prune-packed,read-tree,symbolic-ref,unpack-objects,undate-index,update-ref,
+    write-tree,cat-file,cherry,diff-files,diff-index,diff-tree,for-each-ref,
+    for-each-repo,get-tar-commit-id,ls-files,ls-remote,ls-tree,merge-base,
+    name-rev,pack-redundant,rev-list,rev-parse,show-index,show-ref,unpack-file,
+    var,verify-pack,
+    % Sync
+    daemon,fetch-pack,send-pack,http-backend,update-server-info,http-fetch,
+    http-push,receive-pack,shell,upload-archive,upload-pack,
+    % Helper
+    check-attr,check-ignore,check-mailmap,check-ref-format,column,credential,
+    credential-cache,credential-store,fmt-merge-msg, intepret-trailers,
+    mailinfo,mailsplit,merge-one-file,patch-id,sh-i18n,sh-setup,stripspace,
+  % Concepts
+  gitattributes,gitcli,gitcore-tutorial,gitcredentials,gitcvs-migration,
+  gitdiffcore,giteveryday,gitfaq,gitglossary,githooks,gitignore,gitmailmap,
+  gitmodules,gitnamespaces,gitremote-helpers,gitrepository-layout,
+  gitrevisions,gitsubmodules,gittutorial,gittutorial-2,gitworiflows
+  },
+  % git flags
+  moreemph=[6]{--version,--help,-C,-c,--config-env,--depth,--exec-path,--html-path,
+  --man-path,--info-path,--paginate,--no-pager,--git-dir,--work-tree,
+  --namespace,--super-prefix,--bare,--no-replace-objects,--literal-pathspecs,
+  --glob-pathspecs,--noglob-pathspecs,--no-optional-locks,--list-commands},
+  emphstyle=[2]{\color{blue}},%keywords
+  emphstyle=[3]{\bfseries\color{magenta}},%operators
+  emphstyle=[4]{\color{cyan}},%flags
+  emphstyle=[5]{\color{cyan}},%git commands
+  emphstyle=[6]{\color{cyan}}%flags
+}
+% LEOPYTHON.PRF
+\lstdefinestyle{leopython}{%
+  language=Python,
+  keywordstyle=\color{yellow},
+  basicstyle=\ttfamily\color{fg},
+  numberstyle=\small\sffamily\color{brightred},
+  stringstyle=\color{brightgreen},
+  commentstyle=\color{brightblack},
+  tab=$\color{blue!40!bg}\to$,
+  showtabs,
+  numbers=left,
+  numbersep=5pt,
+  % Delims
+  moredelim=[il]{[}{]}, moredelim=[il]{\{}{\}},
+  moredelim=[l]{(}{)}, moredelim=[s]{<}{>},
+  %
+  % Keywords
+  morekeywords={abs, aiter, all, any, anext, ascii, bin, bool, breakpoint,
+  bytearray, bytes, callable, chr, classmethod, compile, complex, delattr,
+  dict, dir, divmod, enumerate, eval, exec, filter, float, format, frozenset,
+  getattr, globals, hasattr, hash, help, hex, id, input, int, isinstance,
+  issubclass, iter, len, list, locals, map, max, memoryview, min, next,
+  object, oct, open, ord, pow, print,property, range, repr, reversed, round,
+  set, setattr, slice, sorted, staticmethod, str, sum, super, tuple, type,
+  vars, zip, \_\_import\_\_},
+  moreemph=[231]{False, None, True, and, as, assert, async, await, break,
+  class, continue, def, del, elif, else, except, finally, for, from, global,
+  if, import, in, is, lambda, nonlocal, not, or, pass, raise, return, try,
+  while, with, yield},
+  %
+  % Literals
+  % String literals (3.10)
+  morestring=[s]{'}{'}, morestring=[s]{"}{"},
+  morestring=[s]{'''}{'''}, morestring=[s]{"""}{"""},
+  morestring=[s]{f'}{'}, morestring=[s]{f"}{"},
+  morestring=[s]{f'''}{'''}, morestring=[s]{f"""}{"""},
+  morestring=[s]{fr'}{'}, morestring=[s]{fr"}{"},
+  morestring=[s]{fr'''}{'''}, morestring=[s]{fr"""}{"""},
+  morestring=[s]{rf'}{'}, morestring=[s]{rf"}{"},
+  morestring=[s]{rf'''}{'''}, morestring=[s]{rf"""}{"""},
+  morestring=[s]{R'}{'}, morestring=[s]{R"}{"},
+  morestring=[s]{R'''}{'''}, morestring=[s]{R"""}{"""},
+  morestring=[s]{F'}{'}, morestring=[s]{F"}{"},
+  morestring=[s]{F'''}{'''}, morestring=[s]{F"""}{"""},
+  morestring=[s]{U'}{'}, morestring=[s]{U"}{"},
+  morestring=[s]{U'''}{'''}, morestring=[s]{U"""}{"""},
+  morestring=[s]{Fr'}{'}, morestring=[s]{Fr"}{"},
+  morestring=[s]{Fr'''}{'''}, morestring=[s]{Fr"""}{"""},
+  morestring=[s]{fR'}{'}, morestring=[s]{fR"}{"},
+  morestring=[s]{fR'''}{'''}, morestring=[s]{fR"""}{"""},
+  morestring=[s]{FR'}{'}, morestring=[s]{FR"}{"},
+  morestring=[s]{FR'''}{'''}, morestring=[s]{FR"""}{"""},
+  morestring=[s]{rF'}{'}, morestring=[s]{rF"}{"},
+  morestring=[s]{rF'''}{'''}, morestring=[s]{rF"""}{"""},
+  morestring=[s]{Rf'}{'}, morestring=[s]{Rf"}{"},
+  morestring=[s]{Rf'''}{'''}, morestring=[s]{Rf"""}{"""},
+  morestring=[s]{RF'}{'}, morestring=[s]{RF"}{"},
+  morestring=[s]{RF'''}{'''}, morestring=[s]{RF"""}{"""},
+  % Byte literals (3.10)
+  morestring=[s]{b'}{'}, morestring=[s]{b"}{"},
+  morestring=[s]{b'''}{'''}, morestring=[s]{b"""}{"""},
+  morestring=[s]{br'}{'}, morestring=[s]{br"}{"},
+  morestring=[s]{br'''}{'''}, morestring=[s]{br"""}{"""},
+  morestring=[s]{rb'}{'}, morestring=[s]{rb"}{"},
+  morestring=[s]{rb'''}{'''}, morestring=[s]{rb"""}{"""},
+  morestring=[s]{Br'}{'}, morestring=[s]{Br"}{"},
+  morestring=[s]{Br'''}{'''}, morestring=[s]{Br"""}{"""},
+  morestring=[s]{bR'}{'}, morestring=[s]{bR"}{"},
+  morestring=[s]{bR'''}{'''}, morestring=[s]{bR"""}{"""},
+  morestring=[s]{BR'}{'}, morestring=[s]{BR"}{"},
+  morestring=[s]{BR'''}{'''}, morestring=[s]{BR"""}{"""},
+  morestring=[s]{rB'}{'}, morestring=[s]{rB"}{"},
+  morestring=[s]{rB'''}{'''}, morestring=[s]{rB"""}{"""},
+  morestring=[s]{Rb'}{'}, morestring=[s]{Rb"}{"},
+  morestring=[s]{Rb'''}{'''}, morestring=[s]{Rb"""}{"""},
+  morestring=[s]{RB'}{'}, morestring=[s]{RB"}{"},
+  morestring=[s]{RB'''}{'''}, morestring=[s]{RB"""}{"""},
+  % Escape Sequences
+  alsoletter = {\\newline,\\\\,\\',\\",\\a,\\b,\\f,\\n,\\r,\\t,\\v},
+  moreemph=[242]{\\newline,\\\\,\\',\\",\\a,\\b,\\f,\\n,\\r,\\t,\\v},
+  %
+  % Operators & Delimiters
+  alsoletter={+, -, *, **, \&, /, //, \%, =, @, ~, :=, ==, !=, >, >=, <, <=,
+  +=, -=, *=, /=, \%=, \^, |, ~, >>, <<, <<==, \^==, >>==, **==, |=, \&=, @=,
+  \%=, //=, /==, ;},
+  moreemph=[25]{+, -, *, **, \&, /, //, \%, =, @, ~, :=, ==, !=, >, >=, <, <=,
+  +=, -=, *=, /=, \%=, \^, |, ~, >>, <<, <<==, \^==, >>==, **==, |=, \&=, @=,
+  \%=, //=, /==, ;, @dataclass, @lambda, @abstractmethod, @classmethod,
+  @staticmethod, in, and, not, or, is},
+  %
+  % Functions
+  moreemph=[30]{self, >>>},
+  moreemph=[2512]{%
+  % int type methods
+  bit\_length, bit\_count, to\_bytes, from\_bytes, as\_integer\_ratio,
+  % float type methods
+  is\_integer, fromhex,
+  % iterator types
+  \_\_iter\_\_. \_\_next\_\_,
+  % list Class functions
+  sort, sorted, cmp\_to\_key,
+  % string methods
+  capitalize, casefold, center, count, encode, endswith, find, format,
+  format\_map, index, isalnum, isalpha, isascii, isdecimal, isdigit,
+  isidentifier, islower, isnumeric, isprintable, isspace, istitle, isupper,
+  join, ljust, lower, lstrip, makestrans, partition, removeprefix,
+  removesuffix, replace, rfind, rindex, rjust, rpartition, rsplit, rstrip,
+  split, splitlines, startswith, strip, swapcase, title, translate, upper,
+  zfill,
+  % bytes methods
+  fromhex, hex,
+  % bytes & bytearray ops
+  count, removeprefix, removesuffix, decode, endswith, find, index, join,
+  maketrans, partition, replace, rfind, rindex, rpartition, startswith,
+  translate, center, ljust, lstrip, rjust, rsplit, rstrip, split, strip,
+  capitalize, expandtabs, isalnum, isalpha, isdigit, islower, isspace,
+  isupper, lower, splitlines, swapcase, title, upper, zfill
+  % dict methods
+  del, iter, clear, copy, get, items, keys, pop, popitem, reversed,
+  setdefault, update, values, mapping,
+  % collections methods
+  deque, defaultdict, OrderedDict, Counter, ChainMap, abc, Awaitable,
+  Coroutine, AsyncIterable, AsyncIterator, AsyncGenerator, Iterable, Iterator,
+  Generator, Reversble, Container, Collection, Callable, Set, MutableSet,
+  Mapping, MutableMapping, Sequence, MutableSequence, ByteString, MappingView,
+  KeysView, ItemsView, ValuesView,
+  % contextlib
+  AbstractContextManager, AbstractAsyncContextManager,
+  % pathlib
+  Path,
+  % regex
+  Pattern, Match,
+  % site
+  quit, ext, copyright, credits, license, flags, mentions
+  },
+  moreemph=[31]{array, clip, loc, to\_csv, astype, choice, randint, DataFrame,
+  choices, append, to, split, floor, ceil, trunc},
+  %
+  moreemph=[4]{\_\_name\_\_, \_\_init\_\_, \_\_str\_\_, \_\_repr\_\_,
+  \_\_cmp\_\_, \_\_eq\_\_, \_\_lt\_\_, \_\_le\_\_, \_\_ge\_\_, \_\_gt\_\_, \_,
+  \_\_dict\_\_, \_\_func\_\_, \_\_getattr\_\_, \_\_code\_\_, \_\_class\_\_,
+  \_\_bases\_\_, \_\_qualname\_\_, \_\_mro\_\_, \_\_subclasses\_\_},
+  %
+  % exceptions and errors
+  moreemph=[5]{%
+  % Base exceptions
+  BaseException, Exception, ArithmeticError, BufferError, LookupError,
+  % Concrete exceptions
+  AssertionError, AttributeError, EOFError, GeneratorExit, ImportError,
+  ModuleNotFoundError, IndexError, KeyError, KeyboardInterrupt, MemoryError,
+  NameError, NotImplementedError, OSError, OverflowError, RecursionError,
+  ReferenceError, RuntimeError, StopIteration, StopAyncIteration, SyntaxError,
+  IndentationError, TabError, SystemError, SystemExit, TypeError,
+  UnboundLocalError, UnicodeError, UnicodeEncodeError, UnicodeDecodeError,
+  UnicodeTranslateError, ValueError, ZeroDivisionError, EnvironmentError,
+  IOError, WindowsError,
+  % OS exceptions
+  BlockingIOError, ChildProcessError, ConnectionError, BrokenPipeError,
+  ConnectionAbortedError, ConnectionRefusedError, ConnectionResetError,
+  FileExistsError, FileNotFoundError, InterruptedError, IsADirectoryError,
+  NotADirectoryError, PermissionError, ProcessLookupError, TimeoutError},
+  %
+  %
+  % Common modules
+  moreemph=[999]{%
+  % standard modules
+  % a-c
+  asyncio,collections, contextlib,
+  % d-j
+  discord,json,
+  % k-o
+  logging,math,os,
+  % p-s
+  pathlib,random,re, site,
+  % t-z
+  time, timeit,
+  % other
+  matplotlib, np, numpy, pandas, pd, plt, pyplot},
+  %
+  emphstyle=[231]{\color{magenta}}, % keywords
+  emphstyle=[241]{\color{magenta}}, % str/byt literals
+  emphstyle=[242]{\color{magenta}}, % esc seqs
+  emphstyle=[25]{\color{brightcyan}}, % operators
+  emphstyle=[2512]{\color{brightblue}}, % type methods
+  emphstyle=[30]{\color{brightcyan}},
+  emphstyle=[31]{\color{brightblue}}, % functions
+  emphstyle=[4]{\color{brightmagenta}},
+  emphstyle=[5]{\bfseries\color{red}},
+  emphstyle=[999]{\color{brightyellow}}, % modules
+  %
+  breaklines=true,
+  prebreak=\mbox{{\color{brightblack}\scriptsize$\searrow$}},
+}
+\newtcblisting{bash}{
+	before skip=0pt,
+	after skip=0pt,
+	colback=bg,
+	listing only,
+	listing options={%
+		columns=fullflexible,
+		style=leobash
+	},
+	% every listing line={%
+	%   \textcolor{magenta}{bash}\textcolor{green}{\bfseries\$}
+	% }
+	}
+\newtcblisting{python}{
+	colback=bg,
+	listing only,
+	listing options={
+		style=leopython
+	}
+}
+
+% CCONV.TEX
+\def\cconv#1{% col
+	\extractcolorspecs{#1}{\model}{\mycolor}
+	\definecolor{w}{HTML}{FFFFFF} \definecolor{b}{HTML}{000000}
+	\def\c@html{\convertcolorspec{\model}{\mycolor}{HTML}\tmp\tmp}
+	\def\c@rgb{\convertcolorspec{\model}{\mycolor}{RGB}\tmp\tmp}
+	\def\c@cmyk{\convertcolorspec{\model}{\mycolor}{cmyk}\tmp\tmp}
+	\def\chonkyclr{\Large\sf\c@html}
+	\vbox{\offinterlineskip\footnotesize\tt\hsize=18em
+	\halign{\color{fg}
+		\hfil##: &
+		\vtop{\hsize=18em\parindent0em\hangindent0em \strut\color{fg}##\strut}&
+		\hfil##&\hfil##&\hfil##&\hfil##\cr
+		\omit\textcolor{cyan}{\MakeUppercase{\sf Colour info for #1}}\hidewidth\cr\noalign{\medskip}
+		\sf HTML&\#\c@html\cr
+		\sf RGB&[\c@rgb]\cr
+		\sf CMYK&[\c@cmyk]\cr
+	}
+	\halign{
+	\hfil\strut##\strut&\strut##\strut\hfil\cr
+	\fcolorbox{w}{w}{\color{#1}\chonkyclr}&
+	\fcolorbox{w}{b}{\color{#1}\chonkyclr}\cr
+	\fcolorbox{w}{#1}{\color{w}\chonkyclr}&
+	\fcolorbox{w}{#1}{\color{b}\chonkyclr}\cr\noalign{\medskip}
+		}
+	}
+}
+\makeatother
+
+\def\htmlcolor#1{  % visualise html colours
+	\definecolor{#1}{HTML}{#1}
+	\cconv{#1}
+}
+
+\def\ctable#1{%
+	\def\normal{black,red,green,yellow,blue,magenta,cyan,white}
+	\definecolor{b}{HTML}{000000}
+	\foreach \x in \normal{
+	\foreach \y in \normal{
+		\fcolorbox{b}{\x}{%
+		\textcolor{\y}{\tiny\tt\bfseries #1}
+		\textcolor{bright\y}{\tiny\tt\bfseries #1}}\hspace{-0.5em}
+	}\vspace{-0.25em}
+
+	}
+	\foreach \x in \normal{
+	\foreach \y in \normal{
+		\fcolorbox{b}{bright\x}{%
+		\textcolor{\y}{\tiny\tt\bfseries #1}
+		\textcolor{bright\y}{\tiny\tt\bfseries #1}}\hspace{-0.5em}
+	}\vspace{-0.25em}
+
+	}\vspace{1em}
+}
+
+\everymath\exaf{\the\everymath\color{fg}}
+\AtBeginDocument{\randomTheme\pagecolor{bg}}
+\begingroup \def\begin#1{\endgroup \begin{#1}\color{fg}}

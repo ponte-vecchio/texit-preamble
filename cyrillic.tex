@@ -1,0 +1,60 @@
+\protected\def\latinalphabet{a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
+\protected\def\rusalphabet{а, б, в, г, д, е, ё, ж, з, и, й, к, л, м, н, о, п, р, с, т, у, ф, х, ц, ч, ш, щ, ъ, ы, ь, э, ю, я}
+\protected\def\kazalphabet{а, ә, б, в, г, ғ, д, е, ё, ж, з, и, й, к, қ, л, м, н, ң, о, ө, п, р, с, т, у, ұ, ү, ф, х, һ, ц, ч, ш, щ, ъ, ы, і, ь, э, ю, я}
+\makeatletter
+\newcommand{\kir}{\@ifstar{\kir@query}{\kir@random}}
+\newcommand{\kir@query}[2][larm1000]{
+  \setbox0=\hbox{#1\unskip}%
+  \ifdim\wd0=0pt
+    \errmessage{No font name given. Use the non-starred version instead?}%
+  \else \font\cyr@selected=#1%
+  \fontencoding{T2A}\cyr@selected #2%
+  \fi
+}
+\newcommand{\kir@random}[1]{%
+  \def\n@ms{\pdfuniformdeviate 12}
+  \ifcase\n@ms \font\cyr@selected=andk-tlf-t2a
+  \or \font\cyr@selected=Comfortaa-Light-T2A%
+  \or \font\cyr@selected=DroidSerif-Regular-T2A%
+  \or \font\cyr@selected=miama-t2a%
+  \or \font\cyr@selected=charssil-tlf-t2a%
+  \or \font\cyr@selected=ClaraRegular-tlf-sc-t2a%
+  \or \font\cyr@selected=OldStandard-Regular-tlf-t2a%
+  \or \font\cyr@selected=LibertinusSerif-Regular-tlf-t2a%
+  \or \font\cyr@selected=Tempora-Regular-TLF-t2a%
+  \or \font\cyr@selected=Cantarell-Regular-T2A-LF%
+  \else \font\cyr@selected=larm1000
+  \fi
+  \fontencoding{T2A}\cyr@selected #1%
+}
+\newcommand{\cyrtest}{\@ifstar{\CT@Q}{\CT@R}}
+\newcommand{\CT@Q}[1]{%
+  \def\cyr@head##1{{\bfseries ##1}\vskip.5em}
+  \long\def\cyr@box##1{\foreach \k in ##1{\makebox[1.4em][r]{\MakeUppercase{\k}}\kern2pt\makebox[1.1em][l]{\k}
+  }\medskip}
+  {\centering\cyr@head{\Large T2A}}
+
+  \kir*[#1]{%
+    \centering \fontname\the\font\vskip.5em
+
+    \cyr@head{Base}\cyr@box{\rusalphabet}
+
+    \cyr@head{Additional}\cyr@box{{ғ, ң, ө, ұ, һ, і, ә, җ, ў, ү}}
+
+  }
+}
+\newcommand{\CT@R}{%
+  \def\cyr@head##1{{\bfseries ##1}\vskip.5em}
+  \long\def\cyr@box##1{\foreach \k in ##1{\makebox[1.4em][r]{\MakeUppercase{\k}}\kern2pt\makebox[1.1em][l]{\k}
+  }\medskip}
+  {\centering\cyr@head{\Large T2A}}
+
+  \kir{%
+    \centering \fontname\the\font\vskip.5em
+
+    \cyr@head{Base}\cyr@box{\rusalphabet}
+
+    \cyr@head{Additional}\cyr@box{{ғ, ң, ө, ұ, һ, і, ә, җ, ў, ү}}
+
+  }
+}
