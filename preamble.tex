@@ -1,14 +1,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %      ORIGINAL AUTHOR:  LEOTHELION
-%   VERSION (YYYY.MMA):  2022.06a
+%   VERSION (YYYY.MMA):  2022.06f
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % SHORTCUTS
 \makeatletter
+\edef\tmp{\catcode`@\the\catcode`@ \space}\makeatletter
 \let\exaf\expandafter
 \let\ifpkg\@ifpackageloaded
-\makeatother
-\edef\tmp{\catcode`@\the\catcode`@ \space}\makeatletter
 
 % Fileinfo
 \newtoks\files@list
@@ -62,22 +61,19 @@
 \usepackage{IEEEtrantools}
 
 % OF FONTS
-\usepackage[fontsize = 12pt]{scrextend}
+\usepackage[fontsize = 10pt]{scrextend}
 \usepackage[utf8]{inputenc}
 \usepackage[finemath]{kotex}
 \usepackage{dhucs-nanumfont, dhucs-trivcj}
 \usepackage{CJKutf8, pxrubrica}
-\ifpkg{CJKutf8}{%
-	\long\protected\def\cjkrm#1{\begin{CJK}{UTF8}{ipxm} {\color{fg}#1}\end{CJK}}% rm
-	\long\protected\def\cjksf#1{\begin{CJK}{UTF8}{ipxg} {\color{fg}#1}\end{CJK}}% sf
-	\newcommand{\cjk}[2][ipxm]{\begin{CJK}{UTF8}{#1}{\color{fg}#2}\end{CJK}}% general
-}{}
+\long\protected\def\cjkrm#1{\begin{CJK}{UTF8}{ipxm} {\color{fg}#1}\end{CJK}}% rm
+\long\protected\def\cjksf#1{\begin{CJK}{UTF8}{ipxg} {\color{fg}#1}\end{CJK}}% sf
+\newcommand{\cjk}[2][ipxm]{\begin{CJK}{UTF8}{#1}{\color{fg}#2}\end{CJK}}% general
 \usepackage{fontawesome5}
 % \usepackage{mls}
 \usepackage{ctib} % bod skad
-\usepackage{ETbb}
 \usepackage[scaled=.95]{cabin}
-\usepackage[T1]{fontenc}
+\usepackage[T1, T2A]{fontenc}
 \usepackage[stix2,vvarbb,frenchmath]{newtxmath}
 \usepackage[lining,scaled=0.92]{FiraMono}
 % \usepackage[scaled=0.92]{cascadia-code} % default tt for TexLive2021
@@ -111,6 +107,70 @@
 		{zh}{{\cjk[bkai]{属教患席国柳画写挙会任言仮橋田書川能進止.\ 部亡工読演整禁演択話介下.\ 彼聴米権保形多責業表滞薬響避冷柱挙見原.\ 外情関茂覚郵払表年供聞者写政耶芸撃設推.\ 合品可真盗度止光格記治天惑供断告.丸調女話電届統務北予読転悠要話本.\ 供田必処下稿跡真実功着札.\ 形出断技馬出氏最事辺香燃計川周証集合.\ 改川円加手告情写試賀活績持域台囲.}}}
 		{tb}{{\scriptsize\tib\swasti. .yul zhig na bram ze dbyug pa can zhes bya zhig 'dug ste. rab du dbul 'phongs pa bza' ba dang,. bgo med pa zhig go. des khyim bdag cig las ba glang zhig b-rnyes te. nyin par spyad nas ba glang de khrid de khyim bdag de'i khyim du song ba dang,. de na khyim bdag ni zan za ste. dbyug pa can gyis ba glang de khyim gyi nang du btang ba dang,. ba glang sgo gzhan du song nas stor ro.. khyim bdag de zan de zos nas langs pa dang,. de na ba glang ma mthong nas des dbyug pa can la glang ga re zhes byas pa dang,. des smras pa. khyod kyi khyim du btang ngo,. .khyod kyis nga'i glang bor gyis slar byin cig ces smras pa dang,. des smras pa. ngas ma bor ro.. de nas de gnyis 'grogs te. rgyal po'i thad du 'dong ba dang,. 'u bu cag gi rigs pa dang mi rigs pa rtog par 'gyur ro zhes smras nas de gnyis dong ba dang,. mi gzhan zhig gi rta rgod ma zhig bros nas. des dbyug pa can la smras pa. rgod ma ma btang zhes smras pa dang,. des rdo zhig blangs te 'phangs pa dang rta'i rkang pa la phog nas rkan}}
 	}%
+}
+
+% alphabets
+\protected\def\latinalphabet{a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
+\protected\def\rusalphabet{а, б, в, г, д, е, ё, ж, з, и, й, к, л, м, н, о, п, р, с, т, у, ф, х, ц, ч, ш, щ, ъ, ы, ь, э, ю, я}
+\protected\def\kazalphabet{а, ә, б, в, г, ғ, д, е, ё, ж, з, и, й, к, қ, л, м, н, ң, о, ө, п, р, с, т, у, ұ, ү, ф, х, һ, ц, ч, ш, щ, ъ, ы, і, ь, э, ю, я}
+
+% T2A language test
+\makeatletter
+\newcommand{\kir}{\@ifstar{\kir@query}{\kir@random}}
+\newcommand{\kir@query}[2][larm1000]{
+  \setbox0=\hbox{#1\unskip}%
+  \ifdim\wd0=0pt
+    \errmessage{No font name given. Use the non-starred version instead?}%
+  \else \font\cyr@selected=#1%
+  \fontencoding{T2A}\cyr@selected #2%
+  \fi
+}
+\newcommand{\kir@random}[1]{%
+  \def\n@ms{\pdfuniformdeviate 12}
+  \ifcase\n@ms \font\cyr@selected=andk-tlf-t2a
+  \or \font\cyr@selected=Comfortaa-Light-T2A%
+  \or \font\cyr@selected=DroidSerif-Regular-T2A%
+  \or \font\cyr@selected=miama-t2a%
+  \or \font\cyr@selected=charssil-tlf-t2a%
+  \or \font\cyr@selected=ClaraRegular-tlf-sc-t2a%
+  \or \font\cyr@selected=OldStandard-Regular-tlf-t2a%
+  \or \font\cyr@selected=LibertinusSerif-Regular-tlf-t2a%
+  \or \font\cyr@selected=Tempora-Regular-TLF-t2a%
+  \or \font\cyr@selected=Cantarell-Regular-T2A-LF%
+  \else \font\cyr@selected=larm1000
+  \fi
+  \fontencoding{T2A}\cyr@selected #1%
+}
+\newcommand{\cyrtest}{\@ifstar{\CT@Q}{\CT@R}}
+\newcommand{\CT@Q}[1]{%
+  \def\cyr@head##1{{\bfseries ##1}\vskip.5em}
+  \long\def\cyr@box##1{\foreach \k in ##1{\makebox[1.4em][r]{\MakeUppercase{\k}}\kern2pt\makebox[1.1em][l]{\k}
+  }\medskip}
+  {\centering\cyr@head{\Large T2A}}
+
+  \kir*[#1]{%
+    \centering \fontname\the\font\vskip.5em
+
+    \cyr@head{Base}\cyr@box{\rusalphabet}
+
+    \cyr@head{Additional}\cyr@box{{ғ, ң, ө, ұ, һ, і, ә, җ, ў, ү}}
+
+  }
+}
+\newcommand{\CT@R}{%
+  \def\cyr@head##1{{\bfseries ##1}\vskip.5em}
+  \long\def\cyr@box##1{\foreach \k in ##1{\makebox[1.4em][r]{\MakeUppercase{\k}}\kern2pt\makebox[1.1em][l]{\k}
+  }\medskip}
+  {\centering\cyr@head{\Large T2A}}
+
+  \kir{%
+    \centering \fontname\the\font\vskip.5em
+
+    \cyr@head{Base}\cyr@box{\rusalphabet}
+
+    \cyr@head{Additional}\cyr@box{{ғ, ң, ө, ұ, һ, і, ә, җ, ў, ү}}
+
+  }
 }
 
 % OF TIKZ
@@ -419,26 +479,6 @@ orchid}
 	\or \Transrights%
 	\else \Chameleon%
 \fi
-
-%\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
-% \newcommand{\hpalette}{
-% 	\def\normal{black,red,green,yellow,blue,magenta,cyan,white}
-% 	\foreach \x in \normal{
-% 		\fcolorbox{bg}{\x}{\ \ \ }\hspace{-0.575em}
-% 	}
-
-% 	\vspace{-0.575em}
-% 	\foreach \x in \normal{
-%     \fcolorbox{bg}{bright\x}{\ \ \ }\hspace{-0.575em}
-%   }
-% }
-% \newcommand{\vpalette}{
-% 	\def\normal{black,red,green,yellow,blue,magenta,cyan,white}
-% 	\foreach \x in \normal{
-% 		\fcolorbox{black}{\x}{\quad}\hspace{0.1em}\fcolorbox{black}{bright\x}
-% 		{\quad}\par\vspace{-0.4em}
-% 	}\vspace{1em}
-% }
 
 % OF LISTINGS
 \usepackage{listings}
