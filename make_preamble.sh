@@ -6,7 +6,7 @@
 AUTHOR="LEOTHELION"
 VERSION_YEAR="$(date +%Y)"
 VERSION_MONTH="$(date +%m)"
-VERSION_ABC="F"
+VERSION_ABC=$1
 
 # Touch file, or remove then create
 if [[ -f "p_out.tex" ]]; then
@@ -25,6 +25,15 @@ printf '%s\n%s\n%s\n%s\n\n' \
     "\\let\\exaf\\expandafter" \
     "\\let\\ifpkg\\@ifpackageloaded" >> p_out.tex
 
+# All if arg is "all"
+# Array containing all tex files
+ALL=("loadtime" "math" "fonts" "matchcase" "cyrillic" "draw" "chemistry" "colourscheme" "cconv" "catwhich" "fonttable")
+if [[ $2 == "all" ]]; then
+    for hook in ${ALL[@]}; do
+        printf '%s\n' "% $hook.tex" | tr a-z A-Z >> p_out.tex
+        cat "$hook.tex" >> p_out.tex && echo "\n" >> p_out.tex
+    done
+fi
 # Append all args (Not Elegant but works)
 for hook in "$@"; do
     if [[ -f "$hook.tex" ]]; then
@@ -38,3 +47,4 @@ printf '%s\n%s\n%s'\
     "\\everymath\\exaf{\\the\\everymath\\color{fg}}" \
     "\\AtBeginDocument{\\randomTheme\\pagecolor{bg}}" \
     "\\begingroup \\def\\begin#1{\\endgroup \\begin{#1}\\color{fg}}" >> p_out.tex
+exit 0
