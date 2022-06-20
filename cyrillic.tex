@@ -12,17 +12,13 @@
   \fi\fontencoding{T1}\selectfont
 }
 \newcommand{\kir@random}[1]{%
-  \font\cyr@selected=\ifcase\numexpr\pdfuniformdeviate12 andk-tlf-t2a
-  \or Comfortaa-Light-T2A%
+  \font\cyr@selected=\ifcase\numexpr\pdfuniformdeviate12 Comfortaa-Light-T2A%
   \or DroidSerif-Regular-T2A%
   \or miama-t2a%
-  \or charssil-tlf-t2a%
-  \or ClaraRegular-tlf-sc-t2a%
-  \or OldStandard-Regular-tlf-t2a%
-  \or LibertinusSerif-Regular-tlf-t2a%
+  \or larm1000%
   \or Tempora-Regular-TLF-t2a%
   \or Cantarell-Regular-T2A-LF%
-  \else larm1000
+  \else LibertinusSerif-Regular-tlf-t2a
   \fi
   \cyr@selected #1%
   \fontencoding{T1}\selectfont
