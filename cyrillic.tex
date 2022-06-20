@@ -1,31 +1,31 @@
-\protected\def\latinalphabet{a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
-\protected\def\rusalphabet{а, б, в, г, д, е, ё, ж, з, и, й, к, л, м, н, о, п, р, с, т, у, ф, х, ц, ч, ш, щ, ъ, ы, ь, э, ю, я}
-\protected\def\kazalphabet{а, ә, б, в, г, ғ, д, е, ё, ж, з, и, й, к, қ, л, м, н, ң, о, ө, п, р, с, т, у, ұ, ү, ф, х, һ, ц, ч, ш, щ, ъ, ы, і, ь, э, ю, я}
 \makeatletter
-\newcommand{\kir}{\@ifstar{\kir@query}{\kir@random}}
+\long\def\latinalphabet{a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
+\long\def\rusalphabet{а, б, в, г, д, е, ё, ж, з, и, й, к, л, м, н, о, п, р, с, т, у, ф, х, ц, ч, ш, щ, ъ, ы, ь, э, ю, я}
+\long\def\kazalphabet{а, ә, б, в, г, ғ, д, е, ё, ж, з, и, й, к, қ, л, м, н, ң, о, ө, п, р, с, т, у, ұ, ү, ф, х, һ, ц, ч, ш, щ, ъ, ы, і, ь, э, ю, я}
+\newcommand{\kir}{\fontencoding{T2A}\selectfont\@ifstar{\kir@query}{\kir@random}}
 \newcommand{\kir@query}[2][larm1000]{
   \setbox0=\hbox{#1\unskip}%
   \ifdim\wd0=0pt
     \errmessage{No font name given. Use the non-starred version instead?}%
   \else \font\cyr@selected=#1%
-  \fontencoding{T2A}\cyr@selected #2%
-  \fi
+  \cyr@selected #2%
+  \fi\fontencoding{T1}\selectfont
 }
 \newcommand{\kir@random}[1]{%
-  \def\n@ms{\pdfuniformdeviate 12}
-  \ifcase\n@ms \font\cyr@selected=andk-tlf-t2a
-  \or \font\cyr@selected=Comfortaa-Light-T2A%
-  \or \font\cyr@selected=DroidSerif-Regular-T2A%
-  \or \font\cyr@selected=miama-t2a%
-  \or \font\cyr@selected=charssil-tlf-t2a%
-  \or \font\cyr@selected=ClaraRegular-tlf-sc-t2a%
-  \or \font\cyr@selected=OldStandard-Regular-tlf-t2a%
-  \or \font\cyr@selected=LibertinusSerif-Regular-tlf-t2a%
-  \or \font\cyr@selected=Tempora-Regular-TLF-t2a%
-  \or \font\cyr@selected=Cantarell-Regular-T2A-LF%
-  \else \font\cyr@selected=larm1000
+  \font\cyr@selected=\ifcase\numexpr\pdfuniformdeviate12 andk-tlf-t2a
+  \or Comfortaa-Light-T2A%
+  \or DroidSerif-Regular-T2A%
+  \or miama-t2a%
+  \or charssil-tlf-t2a%
+  \or ClaraRegular-tlf-sc-t2a%
+  \or OldStandard-Regular-tlf-t2a%
+  \or LibertinusSerif-Regular-tlf-t2a%
+  \or Tempora-Regular-TLF-t2a%
+  \or Cantarell-Regular-T2A-LF%
+  \else larm1000
   \fi
-  \fontencoding{T2A}\cyr@selected #1%
+  \cyr@selected #1%
+  \fontencoding{T1}\selectfont
 }
 \newcommand{\cyrtest}{\@ifstar{\CT@Q}{\CT@R}}
 \newcommand{\CT@Q}[1]{%
