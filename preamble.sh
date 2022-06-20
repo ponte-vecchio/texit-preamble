@@ -55,7 +55,7 @@ else
 fi
 
 # Footer
-printf '%s\n%s\n%s\n%s'\
+printf '%s\n%s\n%s\n%s\n'\
     "\\makeatother" \
     "\\everymath\\exaf{\\the\\everymath\\color{fg}}" \
     "\\AtBeginDocument{\\randomTheme\\pagecolor{bg}}" \
