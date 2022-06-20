@@ -1,12 +1,11 @@
 #!/bin/sh
 
 # Make a new TeX preamble file called "p_out.tex" 
-# with the contents of each file in the argument
+# with the contents of each (or all) preamble module hook in the argument
 
 AUTHOR="LEOTHELION"
 VERSION_YEAR="$(date +%Y)"
 VERSION_MONTH="$(date +%m)"
-VERSION_ABC=$1
 
 # Touch file, or remove then create
 if [[ -f "p_out.tex" ]]; then
@@ -16,7 +15,7 @@ else
 fi
 
 # Header
-echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n%      ORIGINAL AUTHOR:  $AUTHOR\n%   VERSION (YYYY.MMA):  $VERSION_YEAR.$VERSION_MONTH$VERSION_ABC\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n" >> p_out.tex
+echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n%      ORIGINAL AUTHOR:  $AUTHOR\n%   VERSION (YYYY.MMA):  $VERSION_YEAR.$VERSION_MONTH\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n" >> p_out.tex
 
 # Shortcuts
 printf '%s\n%s\n%s\n%s\n\n' \
@@ -25,22 +24,22 @@ printf '%s\n%s\n%s\n%s\n\n' \
     "\\let\\exaf\\expandafter" \
     "\\let\\ifpkg\\@ifpackageloaded" >> p_out.tex
 
-# All if arg is "all"
-# Array containing all tex files
-ALL=("loadtime" "math" "fonts" "matchcase" "cyrillic" "draw" "chemistry" "colourscheme" "cconv" "catwhich" "fonttable")
-if [[ $2 == "all" ]]; then
-    for hook in ${ALL[@]}; do
+# Append Hooks to output file
+ALL_HOOKS=("loadtime" "math" "fonts" "matchcase" "cyrillic" "draw" "chemistry" "colourscheme" "highlight" "cconv" "catwhich" "fonttable")
+if [[ $1 == "all" ]]; then
+    for hook in ${ALL_HOOKS[@]}; do
         printf '%s\n' "% $hook.tex" | tr a-z A-Z >> p_out.tex
         cat "$hook.tex" >> p_out.tex && echo "\n" >> p_out.tex
     done
-fi
+else
 # Append all args (Not Elegant but works)
-for hook in "$@"; do
-    if [[ -f "$hook.tex" ]]; then
-        printf '%s\n' "% $hook.tex" | tr a-z A-Z >> p_out.tex
-        cat "$hook.tex" >> p_out.tex && echo "\n" >> p_out.tex
-    fi
-done
+	for hook in "$@"; do
+		if [[ -f "$hook.tex" ]]; then
+			printf '%s\n' "% $hook.tex" | tr a-z A-Z >> p_out.tex
+			cat "$hook.tex" >> p_out.tex && echo "\n" >> p_out.tex
+		fi
+	done
+fi
 
 # Footer
 printf '%s\n%s\n%s'\
