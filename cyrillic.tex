@@ -27,7 +27,7 @@
   \cyr@selected #1%
   \fontencoding{T1}\selectfont
 }
-\newcommand{\cyrtest}{\@ifstar{\CT@Q}{\CT@R}}
+\newcommand{\cyrtest}{\fontencoding{T2A}\selectfont\@ifstar{\CT@Q}{\CT@R}}
 \newcommand{\CT@Q}[1]{%
   \def\cyr@head##1{{\bfseries ##1}\vskip.5em}
   \long\def\cyr@box##1{\foreach \k in ##1{\makebox[1.4em][r]{\MakeUppercase{\k}}\kern2pt\makebox[1.1em][l]{\k}
@@ -41,7 +41,7 @@
 
     \cyr@head{Additional}\cyr@box{{ғ, ң, ө, ұ, һ, і, ә, җ, ў, ү}}
 
-  }
+  }\fontencoding{T1}\selectfont
 }
 \newcommand{\CT@R}{%
   \def\cyr@head##1{{\bfseries ##1}\vskip.5em}
@@ -56,5 +56,5 @@
 
     \cyr@head{Additional}\cyr@box{{ғ, ң, ө, ұ, һ, і, ә, җ, ў, ү}}
 
-  }
+  }\fontencoding{T1}\selectfont
 }
