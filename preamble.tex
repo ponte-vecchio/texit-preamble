@@ -1,15 +1,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %      ORIGINAL AUTHOR:  LEOTHELION
-%   VERSION (YYYY.MMA):  2022.06f
+%   VERSION (YYYY.MMA):  2022.06
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % SHORTCUTS
-\makeatletter
 \edef\tmp{\catcode`@\the\catcode`@ \space}\makeatletter
 \let\exaf\expandafter
 \let\ifpkg\@ifpackageloaded
 
-% Fileinfo
+% LOADTIME.TEX
 \newtoks\files@list
 \newcount\files@level
 
@@ -53,14 +52,14 @@
 
 \tmp
 
-% OF MATHS
+% MATH.TEX
 \usepackage{amsthm, amssymb}
 \usepackage{mathtools, mathrsfs, esvect}  % extension to amsmath
 % \usepackage[total={6.5in, 9.5in}]{geometry}
 \usepackage{siunitx}
 \usepackage{IEEEtrantools}
 
-% OF FONTS
+% FONTS.TEX
 \usepackage[fontsize = 10pt]{scrextend}
 \usepackage[utf8]{inputenc}
 \usepackage[finemath]{kotex}
@@ -72,13 +71,15 @@
 \usepackage{fontawesome5}
 % \usepackage{mls}
 \usepackage{ctib} % bod skad
+\usepackage[cmintegrals,cmbraces]{newtxmath}
+\PassOptionsToPackage{lining}{ebgaramond}
+\usepackage{ebgaramond-maths}
+\usepackage[T2A, T1]{fontenc}
 \usepackage[scaled=.95]{cabin}
-\usepackage[T1, T2A]{fontenc}
-\usepackage[stix2,vvarbb,frenchmath]{newtxmath}
 \usepackage[lining,scaled=0.92]{FiraMono}
 % \usepackage[scaled=0.92]{cascadia-code} % default tt for TexLive2021
 
-% QoL
+% MATCHCASE.TEX
 \usepackage{xparse}
 %%%%%%%%%
 % match case
@@ -109,39 +110,37 @@
 	}%
 }
 
-% alphabets
-\protected\def\latinalphabet{a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
-\protected\def\rusalphabet{а, б, в, г, д, е, ё, ж, з, и, й, к, л, м, н, о, п, р, с, т, у, ф, х, ц, ч, ш, щ, ъ, ы, ь, э, ю, я}
-\protected\def\kazalphabet{а, ә, б, в, г, ғ, д, е, ё, ж, з, и, й, к, қ, л, м, н, ң, о, ө, п, р, с, т, у, ұ, ү, ф, х, һ, ц, ч, ш, щ, ъ, ы, і, ь, э, ю, я}
-
-% T2A language test
+% CYRILLIC.TEX
 \makeatletter
-\newcommand{\kir}{\@ifstar{\kir@query}{\kir@random}}
+\long\def\latinalphabet{a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
+\long\def\rusalphabet{а, б, в, г, д, е, ё, ж, з, и, й, к, л, м, н, о, п, р, с, т, у, ф, х, ц, ч, ш, щ, ъ, ы, ь, э, ю, я}
+\long\def\kazalphabet{а, ә, б, в, г, ғ, д, е, ё, ж, з, и, й, к, қ, л, м, н, ң, о, ө, п, р, с, т, у, ұ, ү, ф, х, һ, ц, ч, ш, щ, ъ, ы, і, ь, э, ю, я}
+\newcommand{\kir}{\fontencoding{T2A}\selectfont\@ifstar{\kir@query}{\kir@random}}
 \newcommand{\kir@query}[2][larm1000]{
   \setbox0=\hbox{#1\unskip}%
   \ifdim\wd0=0pt
     \errmessage{No font name given. Use the non-starred version instead?}%
   \else \font\cyr@selected=#1%
-  \fontencoding{T2A}\cyr@selected #2%
-  \fi
+  \cyr@selected #2%
+  \fi\fontencoding{T1}\selectfont
 }
 \newcommand{\kir@random}[1]{%
-  \def\n@ms{\pdfuniformdeviate 12}
-  \ifcase\n@ms \font\cyr@selected=andk-tlf-t2a
-  \or \font\cyr@selected=Comfortaa-Light-T2A%
-  \or \font\cyr@selected=DroidSerif-Regular-T2A%
-  \or \font\cyr@selected=miama-t2a%
-  \or \font\cyr@selected=charssil-tlf-t2a%
-  \or \font\cyr@selected=ClaraRegular-tlf-sc-t2a%
-  \or \font\cyr@selected=OldStandard-Regular-tlf-t2a%
-  \or \font\cyr@selected=LibertinusSerif-Regular-tlf-t2a%
-  \or \font\cyr@selected=Tempora-Regular-TLF-t2a%
-  \or \font\cyr@selected=Cantarell-Regular-T2A-LF%
-  \else \font\cyr@selected=larm1000
+  \font\cyr@selected=\ifcase\numexpr\pdfuniformdeviate12 andk-tlf-t2a
+  \or Comfortaa-Light-T2A%
+  \or DroidSerif-Regular-T2A%
+  \or miama-t2a%
+  \or charssil-tlf-t2a%
+  \or ClaraRegular-tlf-sc-t2a%
+  \or OldStandard-Regular-tlf-t2a%
+  \or LibertinusSerif-Regular-tlf-t2a%
+  \or Tempora-Regular-TLF-t2a%
+  \or Cantarell-Regular-T2A-LF%
+  \else larm1000
   \fi
-  \fontencoding{T2A}\cyr@selected #1%
+  \cyr@selected #1%
+  \fontencoding{T1}\selectfont
 }
-\newcommand{\cyrtest}{\@ifstar{\CT@Q}{\CT@R}}
+\newcommand{\cyrtest}{\fontencoding{T2A}\selectfont\@ifstar{\CT@Q}{\CT@R}}
 \newcommand{\CT@Q}[1]{%
   \def\cyr@head##1{{\bfseries ##1}\vskip.5em}
   \long\def\cyr@box##1{\foreach \k in ##1{\makebox[1.4em][r]{\MakeUppercase{\k}}\kern2pt\makebox[1.1em][l]{\k}
@@ -155,7 +154,7 @@
 
     \cyr@head{Additional}\cyr@box{{ғ, ң, ө, ұ, һ, і, ә, җ, ў, ү}}
 
-  }
+  }\fontencoding{T1}\selectfont
 }
 \newcommand{\CT@R}{%
   \def\cyr@head##1{{\bfseries ##1}\vskip.5em}
@@ -170,10 +169,11 @@
 
     \cyr@head{Additional}\cyr@box{{ғ, ң, ө, ұ, һ, і, ә, җ, ў, ү}}
 
-  }
+  }\fontencoding{T1}\selectfont
 }
 
-% OF TIKZ
+% DRAW.TEX
+% Tikz and Pgfplots
 \usepackage{tikz}
 \usepackage{pgfplots,pgfplotstable}
 \pgfplotsset{%
@@ -185,7 +185,8 @@
 }%
 \pgfkeys{/pgf/number format/.cd,1000 sep={}}
 
-% OF TABLES AND BOXES
+% Others
+\usepackage{xcolor}
 \usepackage{tcolorbox}
 \tcbuselibrary{breakable, listings}
 \usepackage{multirow}
@@ -194,16 +195,16 @@
 \usepackage{tabularx} % superior tabula
 \usepackage{subcaption} % subtables
 \usepackage{booktabs}
+\usepackage{graphicx}
 \setlength{\fboxrule}{0.075pt}
 
-% OF CHEMISTRY
+% CHEMISTRY.TEX
 \usepackage[version=4]{mhchem}
 \usepackage{chemfig}
 \setchemfig{atom sep=2em}
 \renewcommand*\printatom[1]{\footnotesize \ensuremath{\mathsf{#1}}}
 
-% OF COLOURS
-\usepackage{xcolor}
+% COLOURSCHEME.TEX
 %\def\Template{
 %	\definecolor{fg}{HTML}{}
 %	\definecolor{bg}{HTML}{}
@@ -258,7 +259,7 @@ orchid}
 \definecolor{blueberry}{HTML}{0433FF}
 \definecolor{spindrift}{HTML}{73FCD6}
 \definecolor{orchid}{HTML}{7A81FF}
-% GGREYSCALE
+% GREYSCALE
 \def\applegreys{liquorice,tungsten,iron,tin,silver,magnesium,mercury}
 \definecolor{liquorice}{HTML}{000000}
 \definecolor{tungsten}{HTML}{424242}
@@ -480,7 +481,7 @@ orchid}
 	\else \Chameleon%
 \fi
 
-% OF LISTINGS
+% HIGHLIGHT.TEX
 \usepackage{listings}
 \newcommand{\cat}[2][]{\lstinputlisting[#1]{#2}}
 \lstset{
@@ -814,8 +815,7 @@ orchid}
 	}
 }
 
-% COLOUR INFO
-\makeatletter
+% CCONV.TEX
 \def\cconv#1{% col
 	\extractcolorspecs{#1}{\model}{\mycolor}
 	\definecolor{w}{HTML}{FFFFFF} \definecolor{b}{HTML}{000000}
@@ -842,7 +842,6 @@ orchid}
 		}
 	}
 }
-\makeatother
 
 \def\htmlcolor#1{  % visualise html colours
 	\definecolor{#1}{HTML}{#1}
@@ -870,7 +869,7 @@ orchid}
 	}\vspace{1em}
 }
 
-% Catcode things
+% CATWHICH.TEX
 \def\catwhich#1{%
 	\def\curcat{\the\catcode`#1}%
 	\edef\catdesc{\matchcase{\curcat}{%
@@ -898,7 +897,28 @@ orchid}
 	}}
 }
 
-% Set Defaults
+% FONTTABLE.TEX
+\long\def\fonttable#1{%
+    \def\h@x{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F}
+    \def\FT@query{#1}
+    \font\FT@default=qx-lmtt8%
+    \font\FT@selected=\FT@query%
+    \def\FT@width{\the\dimexpr\hsize/17}%
+    \vbox{\offinterlineskip
+        \halign to \hsize{\tabskip=0em plus0em
+            \hfil##&\hfil##\hfil\cr
+            \multispan{2} \hfil{\color{magenta}\FT@selected\fontname\the\font}\hfil\cr\noalign{\bigskip}
+            \makebox[\the\dimexpr\FT@width/2]{}&
+            \foreach \j in \h@x{\makebox[\FT@width][c]{\FT@default\color{magenta}\char"22 \textcolor{magenta!25!bg}{x}\j}}\cr
+        }\medskip{\color{bg!80!fg}\hrule}\smallskip
+        \foreach \h in \h@x{%
+            \mbox{\FT@default\color{magenta}\char"22 \h\textcolor{magenta!25!bg}{x}}\foreach\g in \h@x{%
+                \makebox[\FT@width][c]{\FT@selected\color{fg}\char"\h\g}} \vskip.25em {\color{bg!80!fg}\hrule}\smallskip
+        }
+    }
+}
+
+\makeatother
 \everymath\exaf{\the\everymath\color{fg}}
 \AtBeginDocument{\randomTheme\pagecolor{bg}}
 \begingroup \def\begin#1{\endgroup \begin{#1}\color{fg}}
