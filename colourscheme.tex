@@ -342,6 +342,41 @@
 	\definecolor{fg}			{RGB}{  7, 54, 66}
 	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
 }
+\def\SUSEDark{
+	% https://brand.suse.com/brand-system/color-palette
+	\definecolor{bg}			{RGB}{ 12, 50, 44}
+	\definecolor{fg}			{RGB}{255,255,255}
+	\definecolor{black}			{RGB}{ 12, 50, 44}
+	\definecolor{red}			{RGB}{265,124, 63}
+	\definecolor{green}			{RGB}{ 48,186,120}
+	\definecolor{yellow}		{RGB}{255,193,  7}
+	\definecolor{blue}			{RGB}{ 36, 83,255}
+	\definecolor{magenta}		{RGB}{ 25, 32,114}
+	\definecolor{cyan}			{RGB}{144,235,205}
+	\definecolor{white}			{RGB}{247,247,247}
+	\definecolor{brightblack}	{RGB}{ 12, 50, 44}
+	\definecolor{brightred}		{RGB}{265,124, 63}
+	\definecolor{brightgreen}	{RGB}{ 48,186,120}
+	\definecolor{brightyellow}	{RGB}{255,193,  7}
+	\definecolor{brightblue}	{RGB}{ 36, 83,255}
+	\definecolor{brightmagenta}	{RGB}{ 25, 32,114}
+	\definecolor{brightcyan}	{RGB}{144,235,205}
+	\definecolor{brightwhite}	{RGB}{255,255,255}
+	\colorlet{PineGreen}{bg}
+	\colorlet{JungleGreen}{green}
+	\colorlet{MidnightBlue}{magenta}
+	\colorlet{WaterholeBlue}{blue}
+	\colorlet{Mint}{cyan}
+	\colorlet{Persimmon}{red}
+	\colorlet{Fog}{white}
+	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
+}
+\def\SUSELight{
+	\SUSEDark
+	\definecolor{bg}			{RGB}{247,247,247}
+	\definecolor{fg}			{RGB}{  0,  0,  0}
+	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
+}
 \def\Transrights{% Original Theme
 	\definecolor{bg}			{RGB}{ 29, 31, 33}
 	\definecolor{fg}			{RGB}{149,152,150}
