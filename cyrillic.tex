@@ -2,14 +2,14 @@
 \long\def\latinalphabet{a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z}
 \long\def\rusalphabet{а, б, в, г, д, е, ё, ж, з, и, й, к, л, м, н, о, п, р, с, т, у, ф, х, ц, ч, ш, щ, ъ, ы, ь, э, ю, я}
 \long\def\kazalphabet{а, ә, б, в, г, ғ, д, е, ё, ж, з, и, й, к, қ, л, м, н, ң, о, ө, п, р, с, т, у, ұ, ү, ф, х, һ, ц, ч, ш, щ, ъ, ы, і, ь, э, ю, я}
-\newcommand{\kir}{\fontencoding{T2A}\selectfont\@ifstar{\kir@query}{\kir@random}}
-\newcommand{\kir@query}[2][larm1000]{
+\newcommand{\kir}{\fontencoding{T2A}\selectfont\@ifstar{\kir@random}{\kir@query}}
+\newcommand{\kir@query}[2][larm1000]{%
   \setbox0=\hbox{#1\unskip}%
   \ifdim\wd0=0pt
     \errmessage{No font name given. Use the non-starred version instead?}%
   \else \font\cyr@selected=#1%
   \cyr@selected #2%
-  \fi\fontencoding{T1}\selectfont
+  \fi\fontencoding{T1}\selectfont%
 }
 \newcommand{\kir@random}[1]{%
   \font\cyr@selected=\ifcase\numexpr\pdfuniformdeviate12 Comfortaa-Light-T2A%
