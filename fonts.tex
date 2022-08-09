@@ -4,14 +4,13 @@
 \usepackage[finemath]{kotex}
 \usepackage{dhucs-nanumfont, dhucs-trivcj}
 \usepackage{CJKutf8, pxrubrica}
-\long\protected\def\cjkrm#1{\begin{CJK}{UTF8}{ipxm} {\color{fg}#1}\end{CJK}}
-\long\protected\def\cjksf#1{\begin{CJK}{UTF8}{ipxg} {\color{fg}#1}\end{CJK}}
-\newcommand{\cjk}[2][ipxm]{\begin{CJK}{UTF8}{#1}{\color{fg}#2}\end{CJK}}
+\long\protected\def\jprm#1{\begin{CJK}{UTF8}{ipxm}#1\end{CJK}}
+\long\protected\def\jpsf#1{\begin{CJK}{UTF8}{ipxg}#1\end{CJK}}
+\newcommand{\cjk}[2][ipxm]{\begin{CJK}{UTF8}{#1}#2\end{CJK}}
 
 % Other Asian
 % \usepackage{mls}
 \usepackage{ctib}
-
 
 \usepackage[cmintegrals,cmbraces]{newtxmath}
 \PassOptionsToPackage{lining}{ebgaramond}
@@ -22,7 +21,7 @@
 	var0,       % Unslashed zero
 	varl,       % Nicer l
 	narrow,     %Reduce width by 10%
-	scale=0.92  % scaling factor for TT and verbatim text
+	% scale=0.92  % scaling factor for TT and verbatim text
 ]{zi4}
 
 \usepackage{fontawesome5}
