@@ -399,8 +399,10 @@
 	\pagecolor{bg}\color{fg}\everymath{\color{fg}\displaystyle}
 }
 \def\randomTheme{%
-	\ifcase\pdfuniformdeviate3 \Chameleon%
+	\ifcase\pdfuniformdeviate10 \SUSELight%
 		\or \SUSEDark%
-		\else \SUSELight%
+		\or \Radical%
+		\or \Transrights%
+		\else \Chameleon%
 	\fi
 }
