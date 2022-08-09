@@ -1,18 +1,28 @@
 \usepackage[fontsize = 10pt]{scrextend}
 \usepackage[utf8]{inputenc}
+% CJK
 \usepackage[finemath]{kotex}
 \usepackage{dhucs-nanumfont, dhucs-trivcj}
 \usepackage{CJKutf8, pxrubrica}
-\long\protected\def\cjkrm#1{\begin{CJK}{UTF8}{ipxm} {\color{fg}#1}\end{CJK}}% rm
-\long\protected\def\cjksf#1{\begin{CJK}{UTF8}{ipxg} {\color{fg}#1}\end{CJK}}% sf
-\newcommand{\cjk}[2][ipxm]{\begin{CJK}{UTF8}{#1}{\color{fg}#2}\end{CJK}}% general
-\usepackage{fontawesome5}
+\long\protected\def\cjkrm#1{\begin{CJK}{UTF8}{ipxm} {\color{fg}#1}\end{CJK}}
+\long\protected\def\cjksf#1{\begin{CJK}{UTF8}{ipxg} {\color{fg}#1}\end{CJK}}
+\newcommand{\cjk}[2][ipxm]{\begin{CJK}{UTF8}{#1}{\color{fg}#2}\end{CJK}}
+
+% Other Asian
 % \usepackage{mls}
-\usepackage{ctib} % bod skad
+\usepackage{ctib}
+
+
 \usepackage[cmintegrals,cmbraces]{newtxmath}
 \PassOptionsToPackage{lining}{ebgaramond}
 \usepackage{ebgaramond-maths}
 \usepackage[T2A, T1]{fontenc}
 \usepackage[scaled=.95]{cabin}
-\usepackage[lining,scaled=0.92]{FiraMono}
-% \usepackage[scaled=0.92]{cascadia-code} % default tt for TexLive2021
+\usepackage[%
+	var0,       % Unslashed zero
+	varl,       % Nicer l
+	narrow,     %Reduce width by 10%
+	scale=0.92  % scaling factor for TT and verbatim text
+]{zi4}
+
+\usepackage{fontawesome5}
