@@ -38,7 +38,7 @@ printf '%s\n%s\n%s\n%s\n\n' \
     "\\let\\ifpkg\\@ifpackageloaded" >> $OUTPUT_NAME
 
 # Append Hooks to output file
-ALL_HOOKS=("loadtime" "math" "fonts" "matchcase" "cyrillic" "draw" "chemistry" "colourscheme" "highlight" "cconv" "catwhich" "fonttable")
+ALL_HOOKS=("loadtime" "math" "fonts" "matchcase" "cyrillic" "draw" "chemistry" "colourscheme" "highlight" "colorprofile" "catwhich" "fonttable")
 if [[ $1 == "all" || TEST -eq 1 ]]; then
     for hook in ${ALL_HOOKS[@]}; do
         printf '%s\n' "% $hook.tex" | tr a-z A-Z >> $OUTPUT_NAME
