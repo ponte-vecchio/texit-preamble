@@ -51,9 +51,6 @@
 \let\texit@border@=\empty
 \texit@singlepagetrue
 
-
-\parindent=0pt
-
 \textheight=\maxdimen
 \textwidth=345pt
 
@@ -70,6 +67,7 @@
 \newif\iftexit@pagetrans
 \newif\iftexit@pagegradient
 \newif\iftexit@textgradient
+\newif\iftexit@theme
 \newdimen\texit@border
 
 \protected\def\texit@processcolors{%
@@ -919,18 +917,23 @@
         \fi}\quad
       {\texit@debugfontbold texit.cls v\texit@version}\quad
       id: {\texit@debugfontbold \jobname}\quad
+      \iftexit@theme
+      theme: {\texit@debugfontbold \texit@theme}%
+      \else
+      theme: {\texit@debugfontbold Default}%
+      \fi\quad
       \iftexit@textgradient
       textgradient: {\texit@debugfontbold
         \texit@textgradient\space (\texit@textgradientangle \iftexit@textgradientglow, glow\fi)}%
       \else
       textcolor: {\texit@debugfontbold \texit@textcolor}%
-      \fi \quad
+      \fi\quad
       \iftexit@pagegradient
       pagegradient: {\texit@debugfontbold
         \texit@pagegradient\space (\texit@pagegradientangle)}%
       \else
       pagecolor: {\texit@debugfontbold \texit@pagecolor}%
-      \fi \quad
+      \fi\quad
       {\texit@debugfontbold \iftexit@singlepage single\else multi\fi page}\quad
       minpagewidth: {\texit@debugfontbold \ifdim\texit@minpagewidth<1sp None\else \the\texit@minpagewidth \fi}\quad
       minhsize: {\texit@debugfontbold \ifdim\texit@minhsize<1sp None\else \the\texit@minhsize \fi}\quad

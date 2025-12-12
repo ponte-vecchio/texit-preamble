@@ -1,12 +1,28 @@
 % Must be loaded last.
 \NewDocumentCommand{\ShowModules}{}{%
-    \begingroup\par\noindent\ttfamily
-    % Colourscheme
-    \ifdefined\ShowThemes ShowThemes\par\medskip\else\fi
-    % Typ
-    \ifdefined\ShowTypDefs ShowTypDefs\par\medskip\else\fi
-    \endgroup\par
+  \begingroup\par\noindent
+  % Colourscheme
+  \ifdefined\ShowThemes ShowThemes\par\medskip\else\fi
+  % Typ
+  \ifdefined\ShowTypDefs ShowTypDefs\par\medskip\else\fi
+  \endgroup\par
 }
 
-\Radical
-\leosays{pagecolor=bg, textcolor=fg}
+\ifcase\pdfuniformdeviate28 \Apple%
+  \or \AyuMirage%
+  \or \Breeze%
+  \or \Chameleon%
+  \or \Dracula%
+  \or \Google%
+  \or \Gruvbox%
+  \or \Moe%
+  \or \Nord%
+  \or \Radical%
+  \or \Shizuka%
+  \or \SolarisedDark%
+  \or \SolarisedLight%
+  \or \SUSEDark%
+  \or \SUSELight%
+  \or \Transrights%
+  \else \beshirilari%
+\fi

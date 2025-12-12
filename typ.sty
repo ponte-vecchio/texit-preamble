@@ -129,9 +129,11 @@
   \def\typ@opts##1{{\ttfamily[\narrowspace{\color{blue}##1}\narrowspace]}}
   \par\noindent{\bfseries Definitions within {\ttfamily Typ}}\par\smallskip
   \typ@cs{Hyphen}\typ@opts{s}\quad
-    Hyphenation that accounts for capital letters.\par\smallskip
+    Hyphenation that accounts for capital letters. The starred version makes it unbreakable.\par\smallskip
   \typ@cs{Ndash}\typ@opts{s}\quad
-    En dash that accounts for capital letters.\par\smallskip
+    En dash that accounts for capital letters. The starred version makes it unbreakable.\par\smallskip
+  \typ@cs{Mdash}\typ@opts{s}\quad
+    Em dash that accounts for capital letters. The starred version makes it unbreakable.\par\smallskip
   \typ@cs{endash}\typ@opts{s o[{\string\z@}]}\quad
     En dash with optional raise with extra kerning. The starred version makes it unbreakable.\par\smallskip
   \typ@cs{emdash}\typ@opts{s o[{\string\z@}]}\quad

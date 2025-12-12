@@ -1,32 +1,32 @@
 % Colour Profiling
 \newcommand\colorprofile{\@ifstar{\CP@vals}{\CP@table}}
 \long\protected\def\CP@vals#1{% Tabulated Conversion Profile
-	\extractcolorspecs{#1}{\CP@mdl}{\CP@clr}
-	\def\c@html{\convertcolorspec{\CP@mdl}{\CP@clr}{HTML}\tmp\tmp}
-	\def\c@rgb{\convertcolorspec{\CP@mdl}{\CP@clr}{RGB}\tmp\tmp}
-	\def\c@cmyk{\convertcolorspec{\CP@mdl}{\CP@clr}{cmyk}\tmp\tmp}
-	\vbox{\offinterlineskip\footnotesize\tt
-		\halign{\color{fg}
-			\hfil##:~&\vtop{\parindent0em\hangindent0em \strut##}\cr
-			HTML&\#\c@html\cr RGB &[\c@rgb]\cr CMYK&[\c@cmyk]\cr
-		}
-	}
+  \extractcolorspecs{#1}{\CP@mdl}{\CP@clr}
+  \def\c@html{\convertcolorspec{\CP@mdl}{\CP@clr}{HTML}\tmp\tmp}
+  \def\c@rgb{\convertcolorspec{\CP@mdl}{\CP@clr}{RGB}\tmp\tmp}
+  \def\c@cmyk{\convertcolorspec{\CP@mdl}{\CP@clr}{cmyk}\tmp\tmp}
+  \vbox{\offinterlineskip\footnotesize\tt
+    \halign{\color{fg}
+      \hfil##:~&\vtop{\parindent0em\hangindent0em \strut##}\cr
+      HTML&\#\c@html\cr RGB &[\c@rgb]\cr CMYK&[\c@cmyk]\cr
+    }
+  }
 }
 \long\protected\def\CP@table#1{% Visualisation Table in 000/FFF
-	\extractcolorspecs{#1}{\CP@mdl}{\CP@clr}
-	\definecolor{w}{HTML}{FFFFFF} \definecolor{b}{HTML}{000000}
-	\def\c@html{\convertcolorspec{\CP@mdl}{\CP@clr}{HTML}\tmp\tmp}
-	\def\c@rgb{\convertcolorspec{\CP@mdl}{\CP@clr}{RGB}\tmp\tmp}
-	\def\c@cmyk{\convertcolorspec{\CP@mdl}{\CP@clr}{cmyk}\tmp\tmp}
-	\def\c@html@fmt{\Large\ttfamily\c@html}
-	\vbox{\offinterlineskip\footnotesize\tt\hsize=18em
-		\halign{\hss\strut##\strut&\strut##\strut\hss\cr
-			\fcolorbox{w}{w}{\color{#1}\c@html@fmt}&
-			\fcolorbox{w}{b}{\color{#1}\c@html@fmt}\cr
-			\fcolorbox{w}{#1}{\color{w}\c@html@fmt}&
-			\fcolorbox{w}{#1}{\color{b}\c@html@fmt}\cr
-		}
-	}
+  \extractcolorspecs{#1}{\CP@mdl}{\CP@clr}
+  \definecolor{w}{HTML}{FFFFFF} \definecolor{b}{HTML}{000000}
+  \def\c@html{\convertcolorspec{\CP@mdl}{\CP@clr}{HTML}\tmp\tmp}
+  \def\c@rgb{\convertcolorspec{\CP@mdl}{\CP@clr}{RGB}\tmp\tmp}
+  \def\c@cmyk{\convertcolorspec{\CP@mdl}{\CP@clr}{cmyk}\tmp\tmp}
+  \def\c@html@fmt{\Large\ttfamily\c@html}
+  \vbox{\offinterlineskip\footnotesize\tt\hsize=18em
+    \halign{\hss\strut##\strut&\strut##\strut\hss\cr
+      \fcolorbox{w}{w}{\color{#1}\c@html@fmt}&
+      \fcolorbox{w}{b}{\color{#1}\c@html@fmt}\cr
+      \fcolorbox{w}{#1}{\color{w}\c@html@fmt}&
+      \fcolorbox{w}{#1}{\color{b}\c@html@fmt}\cr
+    }
+  }
 }
 % Visualise a colour for a given HTML HEX.
 \newcommand\htmlcolor{\@ifstar{\HTML@vals}{\HTML@tab}}
@@ -35,25 +35,25 @@
 
 % Visualise the combination of colours for the current theme.
 \newcommand{\themetable}[1]{%
-	\begingroup\centering
-	\def\out@fmt{{\footnotesize\ttfamily #1}}
-	\def\normal{black,red,green,yellow,blue,magenta,cyan,white}
-	\definecolor{b}{HTML}{000000}
-	\foreach \x in \normal{
-		\foreach \y in \normal{
-			\fcolorbox{bg}{\x}{%
-				\textcolor{\y}{\out@fmt}
-				\textcolor{bright\y}{\out@fmt}}\hspace{-0.5em}
-		}\vspace{-0.167em}
+  \begingroup\centering
+  \def\out@fmt{{\footnotesize\ttfamily #1}}
+  \def\normal{black,red,green,yellow,blue,magenta,cyan,white}
+  \definecolor{b}{HTML}{000000}
+  \foreach \x in \normal{
+    \foreach \y in \normal{
+      \fcolorbox{bg}{\x}{%
+        \textcolor{\y}{\out@fmt}
+        \textcolor{bright\y}{\out@fmt}}\hspace{-0.5em}
+    }\vspace{-0.167em}
 
-	}
-	\foreach \x in \normal{
-		\foreach \y in \normal{
-			\fcolorbox{fg}{bright\x}{%
-				\textcolor{\y}{\out@fmt}
-				\textcolor{bright\y}{\out@fmt}}\hspace{-0.5em}
-		}\vspace{-0.167em}
+  }
+  \foreach \x in \normal{
+    \foreach \y in \normal{
+      \fcolorbox{fg}{bright\x}{%
+        \textcolor{\y}{\out@fmt}
+        \textcolor{bright\y}{\out@fmt}}\hspace{-0.5em}
+    }\vspace{-0.167em}
 
-	}\endgroup
+  }\endgroup
 }
 \let\ctable\themetable

@@ -16,9 +16,6 @@
 \RequirePackage{array}
 \RequirePackage{tabularx}
 \RequirePackage{graphicx}
-\RequirePackage{hwemoji}
-\DeclareUnicodeCharacter{FE0E}{}
-\DeclareUnicodeCharacter{FE0F}{}
 
 \setlength{\tabcolsep}{.6667ex}
 \setlength{\fboxrule}{0.075pt}
@@ -26,24 +23,71 @@
 \setlength{\hangindent}{0pt}
 \setlength{\parskip}{0pt}
 
-% FONTS
-\RequirePackage[T2A, T1]{fontenc}
-\RequirePackage{libertinus}
-\RequirePackage[narrow,mono,var0,varqu,scaled=1.08]{zi4}
+% LOADTIME
+\newtoks\files@list
+\newcount\files@level
 
-\NewDocumentCommand		\tf{}{\normalfont}
-\RenewDocumentCommand	\rm{}{\rmfamily}
-\RenewDocumentCommand	\ss{}{\sffamily}
-\RenewDocumentCommand	\tt{}{\ttfamily}
-\RenewDocumentCommand	\bf{}{\bfseries}
-\RenewDocumentCommand	\it{}{\itshape}
-\RenewDocumentCommand	\sl{}{\slshape}
-\NewDocumentCommand		\bi{}{\bfseries\itshape}
-\NewDocumentCommand		\bs{}{\bfseries\slshape}
-\RenewDocumentCommand	\sc{}{\scshape}
+\AddToHook{file/before}{%
+  \expandafter\xdef\csname file@time@\CurrentFile\endcsname{\the\pdfelapsedtime}%
+  \expandafter\xdef\csname file@level@\CurrentFile\endcsname{\the\files@level}%
+  \global\advance\files@level\@ne
+  \global\files@list\expanded{{\the\files@list{\CurrentFile}}}%
+}
+
+\AddToHook{file/after}{%
+  %  Do not do anything if unbalanced.
+  %+ This can happen if this code itself is inside an \input.
+  \ifcsname file@time@\CurrentFile\endcsname
+  \global\advance\files@level\m@ne
+  \expandafter\xdef\csname file@time@\CurrentFile\endcsname
+  {\the\numexpr\pdfelapsedtime-\csname file@time@\CurrentFile\endcsname}%
+  \fi
+}
+
+\protected\def\loadtime{\fileinfoA\fileinfoB\relax}
+\def\fileinfoA#1#2{%
+  \begingroup \par \ttfamily \scriptsize
+  \expandafter\fileinfoB \the\files@list \relax%
+  \endgroup
+}
+
+\def\fileinfoB#1{\ifx\relax#1\expandafter\@gobblethree \fi \fileinfoC{#1}\fileinfoB}
+
+\def\fileinfoC#1{\hbox to\hsize{%
+  %  CM doesn't have bold tt, FiraMono does.
+  \ifnum\csname file@level@#1\endcsname=\z@ \bfseries \fi
+  \hbox to4em{\hss \csname file@time@#1\endcsname\quad}%
+  \count@\csname file@level@#1\endcsname \relax
+  \loop \ifnum\count@>\z@
+  \qquad
+  \advance\count@\m@ne
+  \repeat
+  #1\hfil
+}}
+
+\tmp
+
+% FONTS
+\usepackage[T2A, T1]{fontenc}
+\usepackage{libertinus}
+\usepackage[narrow,mono,var0,varqu,scaled=1.08]{zi4}
+\usepackage{hwemoji}
+\DeclareUnicodeCharacter{FE0E}{}
+\DeclareUnicodeCharacter{FE0F}{}
+
+\NewDocumentCommand    \tf{}{\normalfont}
+\RenewDocumentCommand  \rm{}{\rmfamily}
+\RenewDocumentCommand  \ss{}{\sffamily}
+\RenewDocumentCommand  \tt{}{\ttfamily}
+\RenewDocumentCommand  \bf{}{\bfseries}
+\RenewDocumentCommand  \it{}{\itshape}
+\RenewDocumentCommand  \sl{}{\slshape}
+\NewDocumentCommand    \bi{}{\bfseries\itshape}
+\NewDocumentCommand    \bs{}{\bfseries\slshape}
+\RenewDocumentCommand  \sc{}{\scshape}
 
 % CJK
-\RequirePackage{kotex}
+\usepackage{kotex}
 
 % MATH
 \usepackage{amsthm, amssymb}
@@ -51,7 +95,7 @@
 \usepackage{mathtools, esvect}  % extension to amsmath
 \usepackage{diffcoeff}
 \usepackage{siunitx}
-\usepackage{nicematrix}
+% \usepackage{nicematrix}
 \usepackage{esvect}
 \usepackage{braket}
 \usepackage[frenchmath,upint]{libertinust1math}
@@ -70,8 +114,8 @@
 \ExplSyntaxOff
 % Shortcuts
 \NewDocumentCommand     \vec{ +m }{\ensuremath{\bm{#1}}}
-\NewDocumentCommand     \fk	{ +m }{\ensuremath{\mathfrak{#1}}}
-\NewDocumentCommand     \bb	{ +m }{\ensuremath{\mathbb{#1}}}
+\NewDocumentCommand     \fk { +m }{\ensuremath{\mathfrak{#1}}}
+\NewDocumentCommand     \bb { +m }{\ensuremath{\mathbb{#1}}}
 \RenewDocumentCommand   \cal{ +m }{\ensuremath{\mathcal{#1}}}
 \NewDocumentCommand     \scr{ +m }{\ensuremath{\mathscr{#1}}}
 
@@ -207,9 +251,11 @@
   \def\typ@opts##1{{\ttfamily[\narrowspace{\color{blue}##1}\narrowspace]}}
   \par\noindent{\bfseries Definitions within {\ttfamily Typ}}\par\smallskip
   \typ@cs{Hyphen}\typ@opts{s}\quad
-    Hyphenation that accounts for capital letters.\par\smallskip
+    Hyphenation that accounts for capital letters. The starred version makes it unbreakable.\par\smallskip
   \typ@cs{Ndash}\typ@opts{s}\quad
-    En dash that accounts for capital letters.\par\smallskip
+    En dash that accounts for capital letters. The starred version makes it unbreakable.\par\smallskip
+  \typ@cs{Mdash}\typ@opts{s}\quad
+    Em dash that accounts for capital letters. The starred version makes it unbreakable.\par\smallskip
   \typ@cs{endash}\typ@opts{s o[{\string\z@}]}\quad
     En dash with optional raise with extra kerning. The starred version makes it unbreakable.\par\smallskip
   \typ@cs{emdash}\typ@opts{s o[{\string\z@}]}\quad
@@ -243,125 +289,125 @@
 % Demobox
 \ExplSyntaxOn
 \NewDocumentCommand{\@convert}{ +m +m O{2} }{
-	\str_case:nnF {#2}{
-		{ sp } { \fp_eval:n{ round(\dim_to_decimal_in_unit:nn{#1/#3}{1#2}, 0) } }
-		{ pt } { \fp_eval:n{ round(\dim_to_decimal_in_unit:nn{#1   }{1#2}, 2) } }
-		{ pc } { \fp_eval:n{ round(\dim_to_decimal_in_unit:nn{#1/#3}{1#2}, 3) } }
-		{ in } { \fp_eval:n{ round(\dim_to_decimal_in_unit:nn{#1/#3}{1#2}, 3) } }
-		{ cm } { \fp_eval:n{ round(\dim_to_decimal_in_unit:nn{#1/#3}{1#2}, 3) } }
-	}{% bp, dd, cc, mm follow default
-		\fp_eval:n{ round(\dim_to_decimal_in_unit:nn{(#1 / #3)}{1#2}, 2) }
-	}
+  \str_case:nnF {#2}{
+    { sp } { \fp_eval:n{ round(\dim_to_decimal_in_unit:nn{#1/#3}{1#2}, 0) } }
+    { pt } { \fp_eval:n{ round(\dim_to_decimal_in_unit:nn{#1   }{1#2}, 2) } }
+    { pc } { \fp_eval:n{ round(\dim_to_decimal_in_unit:nn{#1/#3}{1#2}, 3) } }
+    { in } { \fp_eval:n{ round(\dim_to_decimal_in_unit:nn{#1/#3}{1#2}, 3) } }
+    { cm } { \fp_eval:n{ round(\dim_to_decimal_in_unit:nn{#1/#3}{1#2}, 3) } }
+  }{% bp, dd, cc, mm follow default
+    \fp_eval:n{ round(\dim_to_decimal_in_unit:nn{(#1 / #3)}{1#2}, 2) }
+  }
 }
 \ExplSyntaxOff
 
 %% Demobox
 \NewDocumentCommand{\demobox}{ s O{2} +m O{pt} }{%
-	\setbox0=\hbox{#3}
-	\setbox1=\hbox{x}% for x height
-	\setbox2=\hbox{H}% for cap height
-	\font\tinymono=CascadiaCode-Light-tlf-t1 at 2pt
-	\font\tinymonobf=CascadiaCode-Regular-tlf-t1 at 2pt
-	\DeclareRobustCommand{\@repr}[3]{%
-		\begingroup\tinymono ##1%
-		% typeset ':' if #1 is given
-		\ifx##1\relax\else:\thinspace\fi\endgroup%
-		\tinymonobf\color{magenta!80!black}\@convert{##2}{##3}%
-		\thinspace##3%
-	}
-	\scalebox{#2}[#2]{%
-		\begin{picture}(2\wd0, 1.6\ht0)
-			\setlength{\unitlength}{1em}
-			\setlength{\fboxrule}{0em}
-			\setlength{\fboxsep}{0em}
-			\linethickness{0.015em}
-			\def\Ldist{0.25}
-			\def\outerdist{0.45}
-			% rulers
-			\put(0, \ht0){\color{black!60}\line(1,0){\wd0}} % ascender
-			\IfBooleanF{#1}{%
-				\ifdim\dimexpr\ht0-\ht2\relax>2pt% cap-height
-				\put(0, \ht2){\color{blue!40}\line(1,0){\wd0}}
-				\fi
-				\ifdim\dimexpr\ht0-\ht1\relax>2pt% x-height
-				\put(0, \ht1){\color{green!40}\line(1,0){\wd0}}
-				\fi
-			}
-			\ifdim\dp0>0.02em
-			\put(0,-\dp0){\color{black!60}\line(1,0){\wd0}} % descender
-			\fi
-			\put(0, 0){\color{red!90!black!50}\line(1,0){\wd0}} % baseline
-			% content
-			\put(0,0){\fbox{#3}}
-			% labels
-			\IfBooleanF{#1}{%
-				% cap height pt
-				\ifdim\dimexpr\ht0-\ht2\relax>\dimexpr\fontdimen6\tinymono/6*5\relax
-				\put(\wd0+\outerdist, \ht2-0.075){\@repr{caph}{\ht2}{#4}}
-				{\linethickness{0.01em}
-					\put(\wd0+0.19, \ht1){\color{red!50!blue!90!black!50}\line(0,1){\ht2-\ht1}}
-					\put(\wd0+0.15, \ht1){\color{red!90!black!66}\line(1,0){0.08}}
-					\put(\wd0+0.15, \ht2){\color{blue!40!black}\line(1,0){0.08}}
-				}
-				\fi
-				% x-height pt
-				\ifdim\dimexpr\ht0-\ht1\relax>\dimexpr\fontdimen6\tinymono/6*5\relax
-				\put(\wd0+\outerdist, 0.5\ht1-0.05){\@repr{xhgt}{\ht1}{#4}}
-				{\linethickness{0.01em}
-					\put(\wd0+0.19, 0){\color{red!50!green!90!black!50}\line(0,1){\ht1}}
-					\put(\wd0+0.15, 0){\color{red!90!black!66}\line(1,0){0.08}}
-					\put(\wd0+0.15, \ht1){\color{green!60!black}\line(1,0){0.08}}
-				}
-				\fi
-			}
-			% depth pt
-			\ifdim\dp0>\dimexpr\fontdimen6\font/13\relax%
-			\put(\wd0+\outerdist, -\dp0-0.05){\@repr{dpth}{\dp0}{#4}}
-			{\linethickness{0.01em}\color{black!33}%
-				\put(\wd0+0.09, -\dp0){\line(0,1){\dp0}}
-				\put(\wd0+0.05, 0){\line(1,0){0.08}}
-				\put(\wd0+0.05, -\dp0){\line(1,0){0.08}}
-			}
-			\fi
-			% height pt
-			\put(\wd0+\outerdist, \ht0){\@repr{hght}{\ht0}{#4}}{%
-				\linethickness{0.01em}\color{black!33}%
-				\put(\wd0+0.05, 0){\line(1,0){0.08}}
-				\put(\wd0+0.05, \ht0){\line(1,0){0.08}}
-				\put(\wd0+0.09, 0){\line(0,1){\ht0}}
-			}
-			% width pt
-			% label
-			\put(0, 1\ht0){\makebox(\wd0, 0.75\ht1+0.25)[c]{\@repr{}{\wd0}{#4}}}{%
-				\linethickness{0.01em}\color{black!33}%
-				\put(0, \ht0+0.075){\line(1,0){\wd0}}
-				\put(0, \ht0+0.035){\line(0,1){0.08}}
-				\put(\wd0, \ht0+0.035){\line(0,1){0.08}}
-			}
-		\end{picture}
-	}
+  \setbox0=\hbox{#3}
+  \setbox1=\hbox{x}% for x height
+  \setbox2=\hbox{H}% for cap height
+  \font\tinymono=CascadiaCode-Light-tlf-t1 at 2pt
+  \font\tinymonobf=CascadiaCode-Regular-tlf-t1 at 2pt
+  \DeclareRobustCommand{\@repr}[3]{%
+    \begingroup\tinymono ##1%
+    % typeset ':' if #1 is given
+    \ifx##1\relax\else:\thinspace\fi\endgroup%
+    \tinymonobf\color{magenta!80!black}\@convert{##2}{##3}%
+    \thinspace##3%
+  }
+  \scalebox{#2}[#2]{%
+    \begin{picture}(2\wd0, 1.6\ht0)
+      \setlength{\unitlength}{1em}
+      \setlength{\fboxrule}{0em}
+      \setlength{\fboxsep}{0em}
+      \linethickness{0.015em}
+      \def\Ldist{0.25}
+      \def\outerdist{0.45}
+      % rulers
+      \put(0, \ht0){\color{black!60}\line(1,0){\wd0}} % ascender
+      \IfBooleanF{#1}{%
+        \ifdim\dimexpr\ht0-\ht2\relax>2pt% cap-height
+        \put(0, \ht2){\color{blue!40}\line(1,0){\wd0}}
+        \fi
+        \ifdim\dimexpr\ht0-\ht1\relax>2pt% x-height
+        \put(0, \ht1){\color{green!40}\line(1,0){\wd0}}
+        \fi
+      }
+      \ifdim\dp0>0.02em
+      \put(0,-\dp0){\color{black!60}\line(1,0){\wd0}} % descender
+      \fi
+      \put(0, 0){\color{red!90!black!50}\line(1,0){\wd0}} % baseline
+      % content
+      \put(0,0){\fbox{#3}}
+      % labels
+      \IfBooleanF{#1}{%
+        % cap height pt
+        \ifdim\dimexpr\ht0-\ht2\relax>\dimexpr\fontdimen6\tinymono/6*5\relax
+        \put(\wd0+\outerdist, \ht2-0.075){\@repr{caph}{\ht2}{#4}}
+        {\linethickness{0.01em}
+          \put(\wd0+0.19, \ht1){\color{red!50!blue!90!black!50}\line(0,1){\ht2-\ht1}}
+          \put(\wd0+0.15, \ht1){\color{red!90!black!66}\line(1,0){0.08}}
+          \put(\wd0+0.15, \ht2){\color{blue!40!black}\line(1,0){0.08}}
+        }
+        \fi
+        % x-height pt
+        \ifdim\dimexpr\ht0-\ht1\relax>\dimexpr\fontdimen6\tinymono/6*5\relax
+        \put(\wd0+\outerdist, 0.5\ht1-0.05){\@repr{xhgt}{\ht1}{#4}}
+        {\linethickness{0.01em}
+          \put(\wd0+0.19, 0){\color{red!50!green!90!black!50}\line(0,1){\ht1}}
+          \put(\wd0+0.15, 0){\color{red!90!black!66}\line(1,0){0.08}}
+          \put(\wd0+0.15, \ht1){\color{green!60!black}\line(1,0){0.08}}
+        }
+        \fi
+      }
+      % depth pt
+      \ifdim\dp0>\dimexpr\fontdimen6\font/13\relax%
+      \put(\wd0+\outerdist, -\dp0-0.05){\@repr{dpth}{\dp0}{#4}}
+      {\linethickness{0.01em}\color{black!33}%
+        \put(\wd0+0.09, -\dp0){\line(0,1){\dp0}}
+        \put(\wd0+0.05, 0){\line(1,0){0.08}}
+        \put(\wd0+0.05, -\dp0){\line(1,0){0.08}}
+      }
+      \fi
+      % height pt
+      \put(\wd0+\outerdist, \ht0){\@repr{hght}{\ht0}{#4}}{%
+        \linethickness{0.01em}\color{black!33}%
+        \put(\wd0+0.05, 0){\line(1,0){0.08}}
+        \put(\wd0+0.05, \ht0){\line(1,0){0.08}}
+        \put(\wd0+0.09, 0){\line(0,1){\ht0}}
+      }
+      % width pt
+      % label
+      \put(0, 1\ht0){\makebox(\wd0, 0.75\ht1+0.25)[c]{\@repr{}{\wd0}{#4}}}{%
+        \linethickness{0.01em}\color{black!33}%
+        \put(0, \ht0+0.075){\line(1,0){\wd0}}
+        \put(0, \ht0+0.035){\line(0,1){0.08}}
+        \put(\wd0, \ht0+0.035){\line(0,1){0.08}}
+      }
+    \end{picture}
+  }
 }
 
 % CHEMISTRY
 \usepackage[version=4]{mhchem}
-\usepackage{chemfig}
-\renewcommand*\printatom[1]{\footnotesize\ensuremath{\mathrm{#1}}}
-\setchemfig{%
-	atom sep = 1.75em,
-	stack sep = 0.3em,% dim for chemabove and below
-	bond offset = 1.25pt,
-	double bond sep = .25em
-}
+% \usepackage{chemfig}
+% \renewcommand*\printatom[1]{\footnotesize\ensuremath{\mathrm{#1}}}
+% \setchemfig{%
+%   atom sep = 1.75em,
+%   stack sep = 0.3em,% dim for chemabove and below
+%   bond offset = 1.25pt,
+%   double bond sep = .25em
+% }
 \definecolor{cmap1}{HTML}{DD6E79} % #DD6E79
 \definecolor{cmap2}{HTML}{5076A6} % #5076A6
 \definecolor{cmap3}{HTML}{9D3C75} % #9D3C75
 \definecolor{cmap4}{HTML}{AAAA35} % #AAAA35
 \definecolor{cmap5}{HTML}{43863E} % #43863E
 \colorlet{cmap6}{cmap3!55!cmap5}  % #9D3C75!55!43863E
-\tikzset{%
-	atom/.style={draw, circle, minimum size=1.25em, inner sep=0pt},
-	vibr/.style={-Latex, thick}
-}
+% \tikzset{%
+%   atom/.style={draw, circle, minimum size=1.25em, inner sep=0pt},
+%   vibr/.style={-Latex, thick}
+% }
 
 % TEXIT
 \makeatletter
@@ -417,9 +463,6 @@
 \let\texit@border@=\empty
 \texit@singlepagetrue
 
-
-\parindent=0pt
-
 \textheight=\maxdimen
 \textwidth=345pt
 
@@ -436,6 +479,7 @@
 \newif\iftexit@pagetrans
 \newif\iftexit@pagegradient
 \newif\iftexit@textgradient
+\newif\iftexit@theme
 \newdimen\texit@border
 
 \protected\def\texit@processcolors{%
@@ -1285,18 +1329,23 @@
         \fi}\quad
       {\texit@debugfontbold texit.cls v\texit@version}\quad
       id: {\texit@debugfontbold \jobname}\quad
+      \iftexit@theme
+      theme: {\texit@debugfontbold \texit@theme}%
+      \else
+      theme: {\texit@debugfontbold Default}%
+      \fi\quad
       \iftexit@textgradient
       textgradient: {\texit@debugfontbold
         \texit@textgradient\space (\texit@textgradientangle \iftexit@textgradientglow, glow\fi)}%
       \else
       textcolor: {\texit@debugfontbold \texit@textcolor}%
-      \fi \quad
+      \fi\quad
       \iftexit@pagegradient
       pagegradient: {\texit@debugfontbold
         \texit@pagegradient\space (\texit@pagegradientangle)}%
       \else
       pagecolor: {\texit@debugfontbold \texit@pagecolor}%
-      \fi \quad
+      \fi\quad
       {\texit@debugfontbold \iftexit@singlepage single\else multi\fi page}\quad
       minpagewidth: {\texit@debugfontbold \ifdim\texit@minpagewidth<1sp None\else \the\texit@minpagewidth \fi}\quad
       minhsize: {\texit@debugfontbold \ifdim\texit@minhsize<1sp None\else \the\texit@minhsize \fi}\quad
@@ -1485,9 +1534,9 @@
   \colorlet{brightmagenta}  {maroon}    
   \colorlet{brightcyan}    {teal}      
   \colorlet{brightwhite}    {mercury}
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
+  \texit@themetrue
+  \def\texit@theme{Apple}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 
 \newcommand*\AyuMirage{
@@ -1509,9 +1558,9 @@
   \definecolor{brightmagenta}  {RGB}{212,191,255}
   \definecolor{brightcyan}  {RGB}{149,230,203}
   \definecolor{brightwhite}  {RGB}{255,255,255}
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
+  \texit@themetrue
+  \def\texit@theme{Ayu Mirage}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 \newcommand\beshirilari{%
   \definecolor{bg}      {RGB}{220,238,200} % rgb(220,238,200)
@@ -1532,9 +1581,9 @@
   \definecolor{brightmagenta}  {RGB}{129,193, 59} % rgb(129,193, 59)
   \definecolor{brightcyan}  {RGB}{  0,164,137} % rgb(  0,164,137)
   \definecolor{brightwhite}  {RGB}{255,255,255} % rgb(255,255,255)
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
+  \texit@themetrue
+  \def\texit@theme{Besh Irilari}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 \newcommand*\Breeze{
   \definecolor{bg}      {RGB}{ 30, 34, 41}
@@ -1555,9 +1604,9 @@
   \definecolor{brightmagenta}  {RGB}{142, 67,173}
   \definecolor{brightcyan}  {RGB}{ 22,160,133}
   \definecolor{brightwhite}  {RGB}{255,255,255}
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
+  \texit@themetrue
+  \def\texit@theme{Breeze}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 \newcommand*\Chameleon{
   \definecolor{fg}      {RGB}{220,238,200}
@@ -1578,9 +1627,9 @@
   \definecolor{brightmagenta}  {RGB}{129,193, 59}
   \definecolor{brightcyan}  {RGB}{  0,164,137}
   \definecolor{brightwhite}  {RGB}{255,255,255}
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
+  \texit@themetrue
+  \def\texit@theme{Chameleon}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 \newcommand*\Dracula{
   \definecolor{bg}      {RGB}{ 40, 42, 54}
@@ -1601,9 +1650,9 @@
   \definecolor{brightmagenta}  {RGB}{255,146,223}
   \definecolor{brightcyan}  {RGB}{164,255,255}
   \definecolor{brightwhite}  {RGB}{255,255,255}
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
+  \texit@themetrue
+  \def\texit@theme{Dracula}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 
 \newcommand*\Google{
@@ -1625,9 +1674,9 @@
   \definecolor{brightmagenta}  {RGB}{163,106,199}
   \definecolor{brightcyan}  {RGB}{ 57,113,237}
   \definecolor{brightwhite}  {RGB}{255,255,255}
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
+  \texit@themetrue
+  \def\texit@theme{Google}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 \newcommand*\Gruvbox{
   \definecolor{bg}      {RGB}{ 40, 40, 40}
@@ -1648,9 +1697,9 @@
   \definecolor{brightmagenta}  {RGB}{211,134,155}
   \definecolor{brightcyan}  {RGB}{142,192,124}
   \definecolor{brightwhite}  {RGB}{235,219,178}
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
+  \texit@themetrue
+  \def\texit@theme{Gruvbox}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 \newcommand*\Moe{
   \definecolor{bg}      {RGB}{ 19, 19, 19}
@@ -1671,9 +1720,9 @@
   \definecolor{brightmagenta}  {RGB}{198,120,221}
   \definecolor{brightcyan}  {RGB}{255, 99,118}
   \definecolor{brightwhite}  {RGB}{ 50, 64, 71}
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
+  \texit@themetrue
+  \def\texit@theme{Moe}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 \newcommand*\Nord{
   \definecolor{bg}      {RGB}{ 46, 52, 64}
@@ -1694,10 +1743,9 @@
   \definecolor{brightmagenta}  {RGB}{180,142,173}
   \definecolor{brightcyan}  {RGB}{143,188,187}
   \definecolor{brightwhite}  {RGB}{236,239,244}
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
-
+  \texit@themetrue
+  \def\texit@theme{Nord}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 \newcommand*\Radical{% Original Theme
   \definecolor{bg}      {RGB}{ 20, 19, 34}
@@ -1718,9 +1766,9 @@
   \definecolor{brightmagenta}  {RGB}{208, 37,131}
   \definecolor{brightcyan}  {RGB}{160,254,247}
   \definecolor{brightwhite}  {RGB}{197,255,240}
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
+  \texit@themetrue
+  \def\texit@theme{Radical}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 \newcommand*\Shizuka{% Dress up Darling
   \definecolor{bg}      {RGB}{ 21, 18, 25}
@@ -1741,9 +1789,9 @@
   \definecolor{brightmagenta}  {RGB}{206,179,215}
   \definecolor{brightcyan}  {RGB}{225,192,215}
   \definecolor{brightwhite}  {RGB}{234,220,227}
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
+  \texit@themetrue
+  \def\texit@theme{Shizuka}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 \newcommand*\SolarisedDark{
   %|SOLARIZED|HEX    |16/8|TERMCOL  |XTERM/HEX  |sRGB       |
@@ -1782,17 +1830,16 @@
   \definecolor{brightmagenta}  {RGB}{147,161,161}
   \definecolor{brightcyan}  {RGB}{238,232,213}
   \definecolor{brightwhite}  {RGB}{253,246,227}
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
+  \texit@themetrue
+  \def\texit@theme{Solarised Dark}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 \newcommand*\SolarisedLight{
   \SolarisedDark
   \definecolor{bg}      {RGB}{253,246,227}
   \definecolor{fg}      {RGB}{  7, 54, 66}
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
+  \def\texit@theme{Solarised Light}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 \newcommand*\SUSEDark{
   % https://brand.suse.com/brand-system/color-palette
@@ -1821,17 +1868,16 @@
   \colorlet{Mint}{cyan}
   \colorlet{Persimmon}{red}
   \colorlet{Fog}{white}
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
+  \texit@themetrue
+  \def\texit@theme{SUSE Dark}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 \newcommand*\SUSELight{
   \SUSEDark
   \definecolor{bg}      {RGB}{247,247,247}
   \definecolor{fg}      {RGB}{  0,  0,  0}
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
+  \def\texit@theme{SUSE Light}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 \newcommand*\Transrights{% Original Theme
   \definecolor{bg}      {RGB}{ 29, 31, 33}
@@ -1852,9 +1898,9 @@
   \definecolor{brightblue}  {RGB}{214,199,232}
   \definecolor{brightmagenta}  {RGB}{109,130,209}
   \definecolor{brightcyan}  {RGB}{154,199,248}
-  \colorlet{texitpagecolor}{bg}
-  \colorlet{texittextcolor}{fg}
-  \texit@processall
+  \texit@themetrue
+  \def\texit@theme{Trans Rights}
+  \texitset{pagecolor=bg, textcolor=fg}
 }
 
 % TeXit gradient switches
@@ -1890,32 +1936,32 @@
 % Colour Profiling
 \newcommand\colorprofile{\@ifstar{\CP@vals}{\CP@table}}
 \long\protected\def\CP@vals#1{% Tabulated Conversion Profile
-	\extractcolorspecs{#1}{\CP@mdl}{\CP@clr}
-	\def\c@html{\convertcolorspec{\CP@mdl}{\CP@clr}{HTML}\tmp\tmp}
-	\def\c@rgb{\convertcolorspec{\CP@mdl}{\CP@clr}{RGB}\tmp\tmp}
-	\def\c@cmyk{\convertcolorspec{\CP@mdl}{\CP@clr}{cmyk}\tmp\tmp}
-	\vbox{\offinterlineskip\footnotesize\tt
-		\halign{\color{fg}
-			\hfil##:~&\vtop{\parindent0em\hangindent0em \strut##}\cr
-			HTML&\#\c@html\cr RGB &[\c@rgb]\cr CMYK&[\c@cmyk]\cr
-		}
-	}
+  \extractcolorspecs{#1}{\CP@mdl}{\CP@clr}
+  \def\c@html{\convertcolorspec{\CP@mdl}{\CP@clr}{HTML}\tmp\tmp}
+  \def\c@rgb{\convertcolorspec{\CP@mdl}{\CP@clr}{RGB}\tmp\tmp}
+  \def\c@cmyk{\convertcolorspec{\CP@mdl}{\CP@clr}{cmyk}\tmp\tmp}
+  \vbox{\offinterlineskip\footnotesize\tt
+    \halign{\color{fg}
+      \hfil##:~&\vtop{\parindent0em\hangindent0em \strut##}\cr
+      HTML&\#\c@html\cr RGB &[\c@rgb]\cr CMYK&[\c@cmyk]\cr
+    }
+  }
 }
 \long\protected\def\CP@table#1{% Visualisation Table in 000/FFF
-	\extractcolorspecs{#1}{\CP@mdl}{\CP@clr}
-	\definecolor{w}{HTML}{FFFFFF} \definecolor{b}{HTML}{000000}
-	\def\c@html{\convertcolorspec{\CP@mdl}{\CP@clr}{HTML}\tmp\tmp}
-	\def\c@rgb{\convertcolorspec{\CP@mdl}{\CP@clr}{RGB}\tmp\tmp}
-	\def\c@cmyk{\convertcolorspec{\CP@mdl}{\CP@clr}{cmyk}\tmp\tmp}
-	\def\c@html@fmt{\Large\ttfamily\c@html}
-	\vbox{\offinterlineskip\footnotesize\tt\hsize=18em
-		\halign{\hss\strut##\strut&\strut##\strut\hss\cr
-			\fcolorbox{w}{w}{\color{#1}\c@html@fmt}&
-			\fcolorbox{w}{b}{\color{#1}\c@html@fmt}\cr
-			\fcolorbox{w}{#1}{\color{w}\c@html@fmt}&
-			\fcolorbox{w}{#1}{\color{b}\c@html@fmt}\cr
-		}
-	}
+  \extractcolorspecs{#1}{\CP@mdl}{\CP@clr}
+  \definecolor{w}{HTML}{FFFFFF} \definecolor{b}{HTML}{000000}
+  \def\c@html{\convertcolorspec{\CP@mdl}{\CP@clr}{HTML}\tmp\tmp}
+  \def\c@rgb{\convertcolorspec{\CP@mdl}{\CP@clr}{RGB}\tmp\tmp}
+  \def\c@cmyk{\convertcolorspec{\CP@mdl}{\CP@clr}{cmyk}\tmp\tmp}
+  \def\c@html@fmt{\Large\ttfamily\c@html}
+  \vbox{\offinterlineskip\footnotesize\tt\hsize=18em
+    \halign{\hss\strut##\strut&\strut##\strut\hss\cr
+      \fcolorbox{w}{w}{\color{#1}\c@html@fmt}&
+      \fcolorbox{w}{b}{\color{#1}\c@html@fmt}\cr
+      \fcolorbox{w}{#1}{\color{w}\c@html@fmt}&
+      \fcolorbox{w}{#1}{\color{b}\c@html@fmt}\cr
+    }
+  }
 }
 % Visualise a colour for a given HTML HEX.
 \newcommand\htmlcolor{\@ifstar{\HTML@vals}{\HTML@tab}}
@@ -1924,82 +1970,96 @@
 
 % Visualise the combination of colours for the current theme.
 \newcommand{\themetable}[1]{%
-	\begingroup\centering
-	\def\out@fmt{{\footnotesize\ttfamily #1}}
-	\def\normal{black,red,green,yellow,blue,magenta,cyan,white}
-	\definecolor{b}{HTML}{000000}
-	\foreach \x in \normal{
-		\foreach \y in \normal{
-			\fcolorbox{bg}{\x}{%
-				\textcolor{\y}{\out@fmt}
-				\textcolor{bright\y}{\out@fmt}}\hspace{-0.5em}
-		}\vspace{-0.167em}
+  \begingroup\centering
+  \def\out@fmt{{\footnotesize\ttfamily #1}}
+  \def\normal{black,red,green,yellow,blue,magenta,cyan,white}
+  \definecolor{b}{HTML}{000000}
+  \foreach \x in \normal{
+    \foreach \y in \normal{
+      \fcolorbox{bg}{\x}{%
+        \textcolor{\y}{\out@fmt}
+        \textcolor{bright\y}{\out@fmt}}\hspace{-0.5em}
+    }\vspace{-0.167em}
 
-	}
-	\foreach \x in \normal{
-		\foreach \y in \normal{
-			\fcolorbox{fg}{bright\x}{%
-				\textcolor{\y}{\out@fmt}
-				\textcolor{bright\y}{\out@fmt}}\hspace{-0.5em}
-		}\vspace{-0.167em}
+  }
+  \foreach \x in \normal{
+    \foreach \y in \normal{
+      \fcolorbox{fg}{bright\x}{%
+        \textcolor{\y}{\out@fmt}
+        \textcolor{bright\y}{\out@fmt}}\hspace{-0.5em}
+    }\vspace{-0.167em}
 
-	}\endgroup
+  }\endgroup
 }
 \let\ctable\themetable
 
 % FONTTABLE
 \long\def\fonttable#1{%
-    \def\h@x{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F}
-    \def\FT@query{#1}
-    \font\FT@default=qx-lmtt8%
-    \font\FT@selected=\FT@query%
-    \def\FT@width{\the\dimexpr\hsize/17}%
-    \vbox{\offinterlineskip
-        \halign to \hsize{\tabskip=0em plus0em
-            \hfil##&\hfil##\hfil\cr
-            \multispan{2} \hfil{\color{magenta}\FT@selected\fontname\the\font}\hfil\cr\noalign{\bigskip}
-            \makebox[\the\dimexpr\FT@width/2]{}&
-            \foreach \j in \h@x{\makebox[\FT@width][c]{\FT@default\color{magenta}\char"22 \textcolor{magenta!25!bg}{x}\j}}\cr
-        }\medskip{\color{bg!80!fg}\hrule}\smallskip
-        \foreach \h in \h@x{%
-            \mbox{\FT@default\color{magenta}\char"22 \h\textcolor{magenta!25!bg}{x}}\foreach\g in \h@x{%
-                \makebox[\FT@width][c]{\FT@selected\color{fg}\char"\h\g}} \vskip.25em {\color{bg!80!fg}\hrule}\smallskip
-        }
+  \def\h@x{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F}
+  \def\FT@query{#1}
+  \font\FT@default=qx-lmtt8%
+  \font\FT@selected=\FT@query%
+  \def\FT@width{\the\dimexpr\hsize/17}%
+  \vbox{\offinterlineskip
+    \halign to \hsize{\tabskip=0em plus0em
+      \hfil##&\hfil##\hfil\cr
+      \multispan{2} \hfil{\color{magenta}\FT@selected\fontname\the\font}\hfil\cr\noalign{\bigskip}
+      \makebox[\the\dimexpr\FT@width/2]{}&
+      \foreach \j in \h@x{\makebox[\FT@width][c]{\FT@default\color{magenta}\char"22 \textcolor{magenta!25!bg}{x}\j}}\cr
+    }\medskip{\color{bg!80!fg}\hrule}\smallskip
+    \foreach \h in \h@x{%
+      \mbox{\FT@default\color{magenta}\char"22 \h\textcolor{magenta!25!bg}{x}}\foreach\g in \h@x{%
+        \makebox[\FT@width][c]{\FT@selected\color{fg}\char"\h\g}} \vskip.25em {\color{bg!80!fg}\hrule}\smallskip
     }
+  }
 }
 
 % DRAW
 % Tikz and Pgfplots
-\RequirePackage{tikz}
-\RequirePackage{pgfplots}
-\pgfplotsset{%
-	compat=1.18,
-	tick label style = {font=\scriptsize},
-	every axis label = {font=\footnotesize},
-	legend style = {font=\footnotesize},
-	label style = {font=\footnotesize}
-}%
-\pgfkeys{/pgf/number format/.cd,1000 sep={}}
+% \RequirePackage{pgfplots}
+% \pgfplotsset{%
+%   compat=1.18,
+%   tick label style = {font=\scriptsize},
+%   every axis label = {font=\footnotesize},
+%   legend style = {font=\footnotesize},
+%   label style = {font=\footnotesize}
+% }%
+% \pgfkeys{/pgf/number format/.cd,1000 sep={}}
 
 \usepackage{tcolorbox}
 \tcbuselibrary{most, breakable, listings}
 \usepackage{multirow}
 \usepackage{multicol}
-\usepackage{colortbl} % add colour to tables
 
 % ZZZ
 % Must be loaded last.
 \NewDocumentCommand{\ShowModules}{}{%
-    \begingroup\par\noindent\ttfamily
-    % Colourscheme
-    \ifdefined\ShowThemes ShowThemes\par\medskip\else\fi
-    % Typ
-    \ifdefined\ShowTypDefs ShowTypDefs\par\medskip\else\fi
-    \endgroup\par
+  \begingroup\par\noindent
+  % Colourscheme
+  \ifdefined\ShowThemes ShowThemes\par\medskip\else\fi
+  % Typ
+  \ifdefined\ShowTypDefs ShowTypDefs\par\medskip\else\fi
+  \endgroup\par
 }
 
-\Radical
-\leosays{pagecolor=bg, textcolor=fg}
+\ifcase\pdfuniformdeviate28 \Apple%
+  \or \AyuMirage%
+  \or \Breeze%
+  \or \Chameleon%
+  \or \Dracula%
+  \or \Google%
+  \or \Gruvbox%
+  \or \Moe%
+  \or \Nord%
+  \or \Radical%
+  \or \Shizuka%
+  \or \SolarisedDark%
+  \or \SolarisedLight%
+  \or \SUSEDark%
+  \or \SUSELight%
+  \or \Transrights%
+  \else \beshirilari%
+\fi
 
 
 \makeatother
