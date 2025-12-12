@@ -1,0 +1,28 @@
+\usepackage{amsthm, amssymb}
+\RequirePackage[inline]{enumitem}
+\usepackage{mathtools, esvect}  % extension to amsmath
+\usepackage{diffcoeff}
+\usepackage{siunitx}
+\usepackage{nicematrix}
+\usepackage{esvect}
+\usepackage{braket}
+\usepackage[frenchmath,upint]{libertinust1math}
+\usepackage{bm}
+\usepackage[bb=boondox,cal=cm,frak=esstix,scr=boondoxupr]{mathalpha}
+
+% Redefine \left and \right
+\ExplSyntaxOn
+  \cs_new_eq:NN \AMSleft\left
+  \cs_new_eq:NN \AMSright\right
+  \cs_undefine:N \vec
+  \cs_undefine:N \left
+  \cs_undefine:N \right
+  \cs_new_eq:NN \left\mleft
+  \cs_new_eq:NN \right\mright
+\ExplSyntaxOff
+% Shortcuts
+\NewDocumentCommand     \vec{ +m }{\ensuremath{\bm{#1}}}
+\NewDocumentCommand     \fk	{ +m }{\ensuremath{\mathfrak{#1}}}
+\NewDocumentCommand     \bb	{ +m }{\ensuremath{\mathbb{#1}}}
+\RenewDocumentCommand   \cal{ +m }{\ensuremath{\mathcal{#1}}}
+\NewDocumentCommand     \scr{ +m }{\ensuremath{\mathscr{#1}}}

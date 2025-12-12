@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Make a new TeX preamble file
 # with the contents of each (or all) preamble module hook in the argument
@@ -38,28 +38,25 @@ printf '%s\n%s\n%s\n%s\n\n' \
     "\\let\\ifpkg\\@ifpackageloaded" >> $OUTPUT_NAME
 
 # Append Hooks to output file
-ALL_HOOKS=("loadtime" "math" "fonts" "matchcase" "cyrillic" "draw" "chemistry" "colourscheme" "highlight" "colorprofile" "catwhich" "fonttable")
+ALL_HOOKS=("aaa" "fonts" "math" "typ" "llipsum" "demobox" "chemistry" "texit" "colourscheme" "colorprofile" "fonttable" "draw" "zzz")
 if [[ $1 == "all" || TEST -eq 1 ]]; then
-    for hook in ${ALL_HOOKS[@]}; do
-        printf '%s\n' "% $hook.tex" | tr a-z A-Z >> $OUTPUT_NAME
-        cat "$hook.tex" >> $OUTPUT_NAME && echo "\n" >> $OUTPUT_NAME
+    for hook in "${ALL_HOOKS[@]}"; do
+        printf '%s\n' "% $hook" | tr a-z A-Z >> $OUTPUT_NAME
+        cat "$hook.sty" >> $OUTPUT_NAME && echo "\n" >> $OUTPUT_NAME
     done
 else
 # Append all args (Not Elegant but works)
     for hook in "$@"; do
-        if [[ -f "$hook.tex" ]]; then
-            printf '%s\n' "% $hook.tex" | tr a-z A-Z >> $OUTPUT_NAME
-            cat "$hook.tex" >> $OUTPUT_NAME && echo "\n" >> $OUTPUT_NAME
+        if [[ -f "$hook.sty" || -f "$hook.tex" ]]; then
+            printf '%s\n' "% $hook" | tr a-z A-Z >> $OUTPUT_NAME
+            cat "$hook.sty" >> $OUTPUT_NAME && echo "\n" >> $OUTPUT_NAME
         fi
     done
 fi
 
 # Footer
-printf '%s\n%s\n%s\n%s\n'\
-    "\\makeatother" \
-    "\\everymath\\exaf{\\the\\everymath\\color{fg}}" \
-    "\\AtBeginDocument{\\randomTheme\\pagecolor{bg}}" \
-    "\\begingroup \\def\\begin#1{\\endgroup \\begin{#1}\\color{fg}}" >> $OUTPUT_NAME
+printf '\n%s\n'\
+    "\\makeatother" >> $OUTPUT_NAME
 
 # Insert test command
 if [ $TEST -eq 1 ]; then

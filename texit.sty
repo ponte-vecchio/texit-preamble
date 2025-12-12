@@ -1,0 +1,1033 @@
+\makeatletter
+
+\let\sa@cls@afterbegindocument\relax
+\let\sa@cls@beforeenddocument\relax
+
+\def\texit@version{1.2-rc20-embedded}
+
+
+
+\ifdefined\directlua
+\RequirePackage{luatex85}
+\fi
+
+
+
+\DeclareKeys[texit]{
+  pagecolor.tl_gset_e:N               = \texit@pagecolor,
+  pagecolor.initial:n                 = 1a1a1e,
+  pagegradient.tl_gset_e:N            = \texit@pagegradient,
+  pagegradientangle.tl_gset_e:N       = \texit@pagegradientangle,
+  pagegradientangle.initial:n         = 0,
+  textcolor.tl_gset_e:N               = \texit@textcolor,
+  textcolor.initial:n                 = ffffff,
+  textgradient.tl_gset_e:N            = \texit@textgradient,
+  textgradientangle.tl_gset_e:N       = \texit@textgradientangle,
+  textgradientangle.initial:n         = 0,
+  textgradientglow.legacy_if_gset:n   = texit@textgradientglow,
+  singlepage.legacy_if_gset_inverse:n = texit@singlepage,
+  singlepage.usage                    = preamble,
+  multipage.legacy_if_gset:n          = texit@singlepage,
+  multipage.usage                     = preamble,
+  minpagewidth.dim_gset:N             = \texit@minpagewidth,
+  minpagewidth.initial:n              = \z@,
+  minhsize.dim_gset:N                 = \texit@minhsize,
+  minhsize.initial:n                  = \z@,
+  maxhsize.dim_gset:N                 = \texit@maxhsize,
+  maxhsize.initial:n                  = 2000\p@,
+  border.tl_gset_e:N                  = \texit@border@,
+  extraborders.tl_gset_e:N            = \texit@extraborders@,
+  debug.legacy_if_gset:n              = texit@debug,
+}
+\ProcessKeyOptions[texit]
+\protected\long\def\texitset#1{%
+  \SetKeys[texit]{#1}%
+  \texit@processgradients
+  \texit@processcolors
+}
+\let\leosays=\texitset
+
+% \LoadClass{article}
+\let\texit@border@=\empty
+\texit@singlepagetrue
+
+
+\parindent=0pt
+
+\textheight=\maxdimen
+\textwidth=345pt
+
+\pdfpageheight=10pt
+\pdfpagewidth=110pt
+
+\font\texit@debugfont=phvr7t at 2.5pt
+\font\texit@debugfontbold=phvb7t at 2.5pt
+
+
+
+% Parameters
+
+\newif\iftexit@pagetrans
+\newif\iftexit@pagegradient
+\newif\iftexit@textgradient
+\newdimen\texit@border
+
+\protected\def\texit@processcolors{%
+  \def\@tempa{trans}%
+  \global \ifx\texit@pagecolor\@tempa \texit@pagetranstrue \else \texit@pagetransfalse \fi
+  \texit@remhash\texit@pagecolor
+  \texit@remhash\texit@textcolor
+  \@ifpackageloaded{xcolor}{%
+    \texit@definexcolor{texittextcolor}\texit@textcolor
+    \global\expandafter\let\expandafter\default@color
+    \csname \string\color @\iftexit@textgradient white\else texittextcolor\fi\endcsname
+    \global\let\current@color\default@color
+    \global\expandafter\let \csname \string\color @defaultcolor\endcsname \default@color
+    \colorlet{.}{defaultcolor}%
+    \global\let\XC@current@color=\default@color
+    \global\let\XC@default@color=\default@color
+    \iftexit@textgradient
+    \global\chardef\main@pdfcolorstack=\pdfcolorstackinit{1 g 1 G}%
+    \else
+    \texit@parsecolor\texit@textcolor
+    \global\chardef\main@pdfcolorstack=\pdfcolorstackinit{\texit@temp}%
+    \fi
+    \iftexit@pagetrans \else
+    \texit@definexcolor{texitpagecolor}\texit@pagecolor
+    \@ifpackageloaded{tikz-cd}{%
+      \iftexit@textgradient
+      \tikzcdset{background color=black}%
+      \else
+      \tikzcdset{background color=texitpagecolor}%
+      \fi
+    }{}%
+    \fi
+  }{}%
+}
+
+\protected\def\texit@processgradients{%
+  \global \ifx\texit@pagegradient\empty
+  \texit@pagegradientfalse
+  \else
+  \texit@pagegradienttrue
+  \texit@remhash\texit@pagegradient
+  \fi
+  \global \ifx\texit@textgradient\empty
+  \texit@textgradientfalse
+  \else
+  \texit@textgradienttrue
+  \texit@remhash\texit@textgradient
+  \fi
+}
+
+\protected\def\texit@processall{%
+  \texit@processgradients
+  \texit@processcolors
+}
+
+% Border width function used if border option not given
+% (default: max(5, min(15, d/24 - 5))pt where d = max(ht255+dp255, wd255))
+\protected\gdef\texit@border@calc#1{%
+  \texit@border=\dimexpr\ht#1+\dp#1\relax
+  \ifdim\wd#1>\texit@border \texit@border=\wd#1\fi
+  \texit@border=\dimexpr\texit@border/24-5\p@ \relax
+  \ifdim\texit@border<5\p@ \texit@border=5\p@ \fi
+  \ifdim\texit@border>15\p@ \texit@border=15\p@ \fi
+}%
+
+% Parameter that controls greediness of horizontal cropping (lower = more greedy, must be between 1 and 10000)
+\mathchardef\texit@realwd@minhbadness=1000
+
+\AtBeginDocument{\texit@processall}
+
+
+
+% Output Routine
+
+\ifcsname tex_shipout:D\endcsname
+\expandafter\let\expandafter\texit@shipout@final\csname tex_shipout:D\endcsname
+\else
+\let\texit@shipout@final=\shipout
+\fi
+
+% Holds final output page
+\newbox\texit@pagebox
+
+\newtoks\texit@underlay
+\newtoks\texit@overlay
+
+\newdimen\texit@extraborder@T
+\newdimen\texit@extraborder@L
+\newdimen\texit@extraborder@B
+\newdimen\texit@extraborder@R
+
+\newdimen\texit@pagebox@realwd
+\newdimen\texit@boxcclv@realwd
+\newdimen\texit@topins@realwd
+\newdimen\texit@botins@realwd
+\newdimen\texit@footins@realwd
+
+% Marker for OTR to discard the current page
+\newcount\texit@discardpage \texit@discardpage=-"7AFF
+
+% Marker for top of vlist
+\mathchardef\texit@realwd@marker="7AFE
+
+% Generic marker to force retention of full width
+\mathchardef\texit@realwd@forcehsize="7AFD
+
+% Marker for display equations
+\mathchardef\texit@realwd@postdisplaypenalty="7AFC
+
+% If previous box was a display equation
+\newif\iftexit@realwd@isdisplay
+
+\AddToHook{begindocument/end}{
+  \null \vfil \penalty\texit@discardpage
+  \topskip=0pt
+  \postdisplaypenalty=\texit@realwd@postdisplaypenalty
+  \penalty\texit@realwd@marker
+}
+\AddToHook{enddocument}{
+  \iftexit@singlepage
+  \ifdim\pagetotal<1sp \nointerlineskip\null \fi
+  \def\clearpage{\penalty-\@MM}%
+  \fi
+}
+
+\output={%
+  \iftexit@singlepage
+  \ifnum\outputpenalty=-\@MM
+  \let\par=\@@par
+  \texit@shipout
+  \global\output={\deadoutput}%
+  \else
+  \ifnum\outputpenalty=\texit@discardpage
+  \setbox\texit@pagebox=\box\@cclv
+  \else
+  \unvbox\@cclv
+  \fi
+  \fi
+  \else
+  \ifnum\outputpenalty=\texit@discardpage
+  \setbox\texit@pagebox=\box\@cclv
+  \else
+  \ifdim\wd\@cclv=\z@
+  \setbox\texit@pagebox=\box\@cclv
+  \else
+  \let\par=\@@par
+  \texit@shipout
+  \fi
+  \fi
+  \fi
+}
+\protected\def\deadoutput{\setbox\texit@pagebox=\box\@cclv}
+
+\protected\def\texit@shipout{%
+  \ifvoid\texit@topins \else \setbox\texit@topins=\vbox{\unvbox\texit@topins \unskip}\fi
+  \ifvoid\texit@botins \else \setbox\texit@botins=\vbox{\unvbox\texit@botins \unskip}\fi
+  \texit@shipout@setrealwd
+  \setbox\texit@pagebox=\vbox{%
+    \iftexit@textgradient \else
+    \texit@parsecolor\texit@textcolor
+    \pdfliteral{\texit@temp}%
+    \fi
+    \ifvoid\texit@topins \else
+    \unvbox\texit@topins
+    \vskip \skip\texit@topins
+    \fi
+    \unvbox\@cclv
+    \ifvoid\texit@botins \else
+    \vskip \skip\texit@botins
+    \unvbox\texit@botins
+    \fi
+    \ifvoid\footins \else
+    \vskip \skip\footins
+    \footnoterule
+    \unvbox\footins
+    \fi
+  }%
+  \wd\texit@pagebox=\texit@pagebox@realwd
+  \ifx\texit@border@\empty
+  \texit@border@calc\texit@pagebox
+  \else
+  \texit@border \dimexpr\texit@border@\relax
+  \fi
+  \ifx\texit@extraborders@\empty \else
+  \expandafter\texit@extraborders@parse\texit@extraborders@\@nil
+  \fi
+  %
+  \voffset=-1in
+  \hoffset=\voffset
+  \pdfpageheight=\dimexpr\ht\texit@pagebox+\dp\texit@pagebox+2\texit@border+\texit@extraborder@T+\texit@extraborder@B +2\p@ \relax
+  \pdfpagewidth=\dimexpr\texit@pagebox@realwd+2\texit@border+\texit@extraborder@L+\texit@extraborder@R +2\p@ \relax
+  \ifdim\pdfpagewidth<\texit@minpagewidth
+  \pdfpagewidth=\texit@minpagewidth
+  \fi
+  \set@display@protect
+  \texit@shipout@final \vbox{\kern\p@ \moveright\p@ \vbox to\pdfpageheight{%
+      \nointerlineskip \vbox to\z@{%
+        \set@typeset@protect
+        \hsize=\dimexpr\texit@pagebox@realwd+2\texit@border+\texit@extraborder@L+\texit@extraborder@R \relax
+        \vsize=\pdfpageheight
+        \the\texit@underlay
+        \vss
+      }%
+      \nointerlineskip \moveright\dimexpr\texit@border+\texit@extraborder@L \vbox to\z@{%
+        \kern\texit@border \kern\texit@extraborder@T
+        \iftexit@textgradient
+        \texit@gradient@parse\texit@textgradient
+        \def\texit@debug@node@color{1 1 0}%
+        \texit@gradientbox\texit@pagebox\texit@textgradientangle
+        % On top of existing debug overlay
+        \global\setbox\texit@debug@pagebox=\vbox{%
+          \vbox to\z@{\box\texit@debug@pagebox \vss}%
+          \unvbox\texit@debug@gradientbox
+        }%
+        \else
+        \box\texit@pagebox
+        \fi
+        \vss
+      }%
+      \nointerlineskip \vbox to\z@{%
+        \set@typeset@protect
+        \hsize=\dimexpr\texit@pagebox@realwd+2\texit@border+\texit@extraborder@L+\texit@extraborder@R \relax
+        \vsize=\pdfpageheight
+        \the\texit@overlay
+        \vss
+      }%
+      \iftexit@debug
+      \nointerlineskip \moveright\dimexpr\texit@border+\texit@extraborder@L
+      \vbox to\z@{\kern\texit@border \kern\texit@extraborder@T \box\texit@debug@pagebox \vss}%
+      \fi
+      \vfil
+      \iftexit@debug \texit@debug@footline \fi
+  }}%
+}
+
+\texit@underlay={%
+  \texit@paintpage
+}
+
+\def\texit@extraborders@parse#1,#2,#3,#4\@nil{%
+  \global\texit@extraborder@T=\dimexpr#1+\z@\relax
+  \global\texit@extraborder@L=\dimexpr#2+\z@\relax
+  \global\texit@extraborder@B=\dimexpr#3+\z@\relax
+  \global\texit@extraborder@R=\dimexpr#4+\z@\relax
+}
+
+\protected\def\texit@shipout@setrealwd{%
+  \ifvoid\texit@topins \else
+  \texit@realwd\texit@topins\texit@topins@realwd
+  \edef\@tempb{\the\texit@debug@boxes}%
+  \ifdim\texit@topins@realwd>\texit@pagebox@realwd
+  \texit@pagebox@realwd=\texit@topins@realwd
+  \fi
+  \fi
+  \texit@realwd\@cclv\texit@boxcclv@realwd
+  \edef\@tempa{\the\texit@debug@boxes}%
+  \texit@pagebox@realwd=\texit@boxcclv@realwd
+  \ifvoid\texit@botins \else
+  \texit@realwd\texit@botins\texit@botins@realwd
+  \edef\@tempc{\the\texit@debug@boxes}%
+  \ifdim\texit@botins@realwd>\texit@pagebox@realwd
+  \texit@pagebox@realwd=\texit@botins@realwd
+  \fi
+  \fi
+  \ifvoid\footins \else
+  \texit@realwd\footins\texit@footins@realwd
+  \edef\@tempd{\the\texit@debug@boxes}%
+  \ifdim\texit@footins@realwd>\texit@pagebox@realwd
+  \texit@pagebox@realwd=\texit@footins@realwd
+  \fi
+  \ifdim\texit@pagebox@realwd<\footnoterulewd
+  \texit@pagebox@realwd=\footnoterulewd
+  \fi
+  \fi
+  \iftexit@debug
+  \setbox\texit@debug@pagebox=\vbox{%
+    \ifvoid\texit@topins \else
+    \setbox\z@=\vbox{\unvcopy\texit@topins}%
+    \wd\z@=\texit@topins@realwd
+    \texit@debug@draw@page\z@\@tempb{topins}%
+    \kern\ht\z@ \kern\dp\z@
+    \vskip \skip\texit@topins
+    \fi
+    \setbox\z@=\vbox{\unvcopy\@cclv}%
+    \wd\z@=\texit@boxcclv@realwd
+    \texit@debug@draw@page\z@\@tempa{box255}%
+    \kern\ht\z@ \kern\dp\z@
+    \ifvoid\texit@botins \else
+    \vskip \skip\texit@botins
+    \setbox\z@=\vbox{\unvcopy\texit@botins}%
+    \wd\z@=\texit@botins@realwd
+    \texit@debug@draw@page\z@\@tempb{botins}%
+    \kern\ht\z@ \kern\dp\z@
+    \fi
+    \ifvoid\footins \else
+    \vskip \skip\footins
+    \vskip \footnoteruleht
+    \setbox\z@=\vbox{\unvcopy\footins}%
+    \wd\z@=\texit@footins@realwd
+    \texit@debug@draw@page\z@\@tempd{footins}%
+    \fi
+  }%
+  \fi
+}
+
+% Compute real width of #1 and store in #2
+\protected\def\texit@realwd#1#2{%
+  #2=\wd#1%
+  \dimen@=\z@
+  \texit@debug@boxes={}%
+  \setbox\z@=\vbox{%
+    \hbadness=\@M
+    \penalty\texit@realwd@marker
+    \unvcopy#1%
+    \def\next{\texit@realwd@sift#2}\next
+  }%
+  \ifdim#2<\texit@minhsize \global#2=\texit@minhsize \fi
+  \ifdim#2>\texit@maxhsize \global#2=\texit@maxhsize \fi
+}
+
+\def\texit@realwd@sift#1{%
+  \texit@realwd@isdisplayfalse
+  \texit@realwd@sift@superunskip
+  \setbox\z@=\lastbox
+  \ifvoid\z@
+  \ifnum\lastpenalty=\texit@realwd@marker
+  \texit@realwd@sift@end{#1}%
+  \else
+  \texit@realwd@sift@endA{#1}%
+  \fi
+  \let\next\relax
+  \else
+  \iftexit@realwd@isdisplay
+  \iftexit@debug \texit@debug@draw@box{1 0 0}{1 0 0 1 \strip@pt\dimexpr(\hsize-\wd\z@)/2\relax\space 0 cm}\z@ \fi
+  \ifdim\dimen@<\hsize \dimen@=\hsize \fi
+  \else
+  \ifhbox\z@
+  \setbox\tw@=\hbox to\wd\z@{\unhcopy\z@}%
+  \count@=\badness
+  \ifnum\count@=1000000 % overfull box
+  \setbox\tw@=\hbox{\unhbox\z@ \texit@superunskip}%
+  \ifdim\wd\tw@>\dimen@
+  \dimen@=\wd\tw@
+  \fi
+  \iftexit@debug \texit@debug@draw@box{0 1 0}{}\tw@ \fi
+  \else
+  \setbox\tw@=\hbox to\wd\z@{\unhcopy\z@ \texit@superunskip}%
+  \ifnum\numexpr\badness-\count@>\texit@realwd@minhbadness
+  \setbox\tw@\hbox{\unhbox\z@ \texit@superunskip}%
+  \ifdim\wd\tw@>\dimen@
+  \dimen@=\wd\tw@
+  \fi
+  \iftexit@debug \texit@debug@draw@box{0 1 0}{}\tw@ \fi
+  \else
+  \ifdim\wd\z@>\dimen@
+  \dimen@=\wd\z@
+  \fi
+  \iftexit@debug \texit@debug@draw@box{0 1 0}{}\z@ \fi
+  \fi
+  \fi
+  \else
+  \ifdim\dimexpr\wd\z@+1sp>\dimexpr\texit@maxhsize\relax
+  \let\next=\relax
+  \else
+  \ifdim\wd\z@>\dimen@
+  \dimen@=\wd\z@
+  \fi
+  \fi
+  \iftexit@debug \texit@debug@draw@box{0 0 1}{}\z@ \fi
+  \fi
+  \fi
+  \ifdim\dimexpr\dimen@+1sp>\texit@maxhsize
+  \texit@realwd@sift@endA{#1}%
+  \let\next\relax
+  \fi
+  \fi
+  \next
+}
+
+% Remove all trailing skips, kerns, and penalties
+\protected\def\texit@superunskip{%
+  \ifcase\lastnodetype
+  % 0: char node
+  \or % 1: hlist node
+  \or % 2: vlist node
+  \or % 3: rule node
+  \or % 4: ins node
+  \or % 5: mark node
+  \or % 6: adjust node
+  \or % 7: ligature node
+  \or % 8: disc node
+  \or % 9: whatsit node
+  \or % 10: math node
+  \or % 11: glue node
+  \unskip
+  \expandafter\texit@superunskip
+  \or % 12: kern node
+  \unkern
+  \expandafter\texit@superunskip
+  \or % 13: penalty node
+  \unpenalty
+  \expandafter\texit@superunskip
+  \or % 14: unset node
+  \or % 15: math mode nodes
+  \fi
+}
+% Version of \texit@superunskip with special message handling and saves total distance in \dimen@i
+\protected\def\texit@realwd@sift@superunskip{\dimen@i=\z@ \texit@realwd@sift@dosuperunskip}
+\def\texit@realwd@sift@dosuperunskip{%
+  \let\next@=\relax
+  \ifcase\lastnodetype
+  % 0: char node
+  \or % 1: hlist node
+  \or % 2: vlist node
+  \or % 3: rule node
+  \or % 4: ins node
+  \or % 5: mark node
+  \or % 6: adjust node
+  \or % 7: ligature node
+  \or % 8: disc node
+  \or % 9: whatsit node
+  \or % 10: math node
+  \or % 11: glue node
+  \advance\dimen@i \lastskip
+  \unskip
+  \let\next@=\texit@realwd@sift@dosuperunskip
+  \or % 12: kern node
+  \advance\dimen@i \lastkern
+  \unkern
+  \let\next@=\texit@realwd@sift@dosuperunskip
+  \or % 13: penalty node
+  \ifnum\lastpenalty=\texit@realwd@marker \else
+  \ifnum\lastpenalty=\texit@realwd@forcehsize
+  \ifdim\dimen@<\hsize \dimen@=\hsize \fi
+  \unpenalty
+  \let\next@=\texit@realwd@sift@dosuperunskip
+  \else
+  \ifnum\lastpenalty=\texit@realwd@postdisplaypenalty
+  \unpenalty \unskip \unpenalty
+  \texit@realwd@isdisplaytrue
+  \else
+  \unpenalty
+  \let\next@=\texit@realwd@sift@dosuperunskip
+  \fi
+  \fi
+  \fi
+  \or % 14: unset node
+  \or % 15: math mode nodes
+  \fi
+  \next@
+}
+\def\texit@realwd@sift@end#1{%
+  \global#1\dimen@
+}
+\def\texit@realwd@sift@endA#1{%
+  \ifdim\dimen@>#1
+  \global#1\dimen@
+  \fi
+}
+
+
+
+% Colors
+
+% Convert HTML or named color to pdf color operator and save results in \texit@temp
+\protected\def\texit@parsecolor#1{%
+  \begingroup
+  \escapechar=`\\%
+  \ifcsname \string\color @#1\endcsname
+  \long\def\xcolor@##1##2##3##4{##2}%
+  \xdef\texit@temp{\csname \string\color @#1\endcsname}%
+  \else
+  \uppercase\expanded{{\edef\noexpand\texit@temp{\noexpand\texit@parsecolorA#1}}}%
+  \xdef\texit@temp{\texit@temp rg \texit@temp RG}%
+  \fi
+  \endgroup
+}
+\def\texit@parsecolorA#1#2#3#4#5#6{%
+  \strip@pt\dimexpr"#1#2\p@/"FF\relax\space
+  \strip@pt\dimexpr"#3#4\p@/"FF\relax\space
+  \strip@pt\dimexpr"#5#6\p@/"FF\relax\space
+}
+% Convert HTML or named color to tuple of rgb values and save results in \texit@temp
+\protected\def\texit@parsecolor@rgb#1{%
+  \begingroup
+  \escapechar=`\\%
+  \ifcsname \string\color @#1\endcsname
+  \convertcolorspec{named}{#1}{HTML}\texit@temp
+  \xdef\texit@temp{\expandafter\texit@parsecolorA \texit@temp}%
+  \else
+  \uppercase\expanded{{\xdef\noexpand\texit@temp{\noexpand\texit@parsecolorA#1}}}%
+  \fi
+  \endgroup
+}
+
+% (xcolor) Define named color #1 using HTML or named color #2
+\protected\def\texit@definexcolor#1#2{%
+  \begingroup \escapechar=`\\%
+  \expandafter \endgroup
+  \ifcsname \string\color @#2\endcsname
+  \colorlet{#1}{#2}%
+  \else
+  \definecolor{#1}{HTML}{#2}%
+  \fi
+}
+
+% Remove hashes (and spaces) in-place from macro
+\protected\def\texit@remhash#1{%
+  \xdef#1{\expandafter\texit@remhashA#1{\expandafter\@gobble}}%
+}
+\long\def\texit@remhashA#1{%
+  \if###1\else #1\fi
+  \texit@remhashA
+}
+
+\protected\def\texit@paintpage{%
+  \iftexit@pagetrans \else
+  \iftexit@pagegradient
+  \nointerlineskip \vbox to\z@{%
+    \setbox\z@=\vbox{%
+      \pdfliteral{1 g 1 G}%
+      \hrule height\vsize width\hsize
+      \vss
+    }%
+    \texit@gradient@parse\texit@pagegradient
+    \texit@textgradientglowfalse
+    \texit@gradientbox@overshoot=\z@
+    \def\texit@debug@node@color{1 .5 0}%
+    \texit@gradientbox\z@\texit@pagegradientangle
+    % Below existing debug overlay
+    \global\setbox\texit@debug@pagebox=\vbox{%
+      \vbox to\z@{\kern-\texit@border \kern-\texit@extraborder@T \moveleft\dimexpr\texit@border+\texit@extraborder@L \box\texit@debug@gradientbox \vss}%
+      \unvbox\texit@debug@pagebox
+    }%
+    \vss
+  }%
+  \else
+  \pdfsave
+  \texit@parsecolor\texit@pagecolor
+  \pdfliteral{\texit@temp}%
+  \nointerlineskip \vbox to\z@{%
+    \hrule height\vsize width\hsize
+    \vss
+  }%
+  \pdfrestore
+  \fi
+  \fi
+}
+
+\protected\def\texit@gradientbox#1#2{%
+  \if\relax \ifdim\wd#1=\z@.\fi \ifdim\dimexpr\ht#1+\dp#1=\z@.\fi \relax
+  \vbox\bgroup
+  \expanded{\noexpand\texit@gradientbox@setends{#1}{\the\numexpr#2-(#2/360)*360}}%
+  \iftexit@debug
+  \global\setbox\texit@debug@gradientbox=\vbox{%
+    \texit@debug@draw@end\texit@debug@node@color{0\%}{\texit@gradientbox@startx}{\texit@gradientbox@starty}%
+    \texit@debug@draw@end\texit@debug@node@color{100\%}{\texit@gradientbox@endx}{\texit@gradientbox@endy}%
+    \pdfliteral{%
+      q
+      .996264 0 0 .996264 0 0 cm
+      \texit@debug@node@color\space RG
+      .3 w
+      [1.25] 0 d
+      \expandafter\texit@rempt \texit@gradientbox@startx\space
+      \expandafter\texit@rempt \texit@gradientbox@starty\space
+      m
+      \expandafter\texit@rempt \texit@gradientbox@endx\space
+      \expandafter\texit@rempt \texit@gradientbox@endy\space
+      l S
+      Q
+    }%
+  }%
+  \fi
+  \setbox2=\hbox to\dimexpr\wd#1+2\texit@gradientbox@overshoot{%
+    \kern\texit@gradientbox@overshoot
+    \vbox to\dimexpr\ht#1+\dp#1+2\texit@gradientbox@overshoot{%
+      \kern\texit@gradientbox@overshoot
+      \pdfliteral{q .996264 0 0 .996264 0 0 cm /Sh sh Q}%
+      \vfil
+    }%
+    \hfil
+  }%
+  \setbox#1=\hbox to\dimexpr\wd#1+2\texit@gradientbox@overshoot{%
+    \kern\texit@gradientbox@overshoot
+    \vbox to\dimexpr\ht#1+\dp#1+2\texit@gradientbox@overshoot{%
+      \kern\texit@gradientbox@overshoot
+      \texit@gradientboxA{#1}%
+      \vfil
+    }%
+    \hfil
+  }%
+  \immediate\pdfxform#1
+  \setbox4=\hbox{\pdfrefxform\pdflastxform}%
+  \immediate\pdfxform attr{/Group << /S /Transparency /CS /DeviceGray >>}4
+  \count@=\pdflastxform
+  \def\do##1##2{%
+    \texit@parsecolor@rgb{##2}%
+    \ifnum##1=1
+    \edef\next{ << /FunctionType 2 /Domain [0 1] /C0 [\texit@temp] /C1 }%
+    \else
+    \ifnum##1=\texit@gradient@count
+    \edef\next{\next [\texit@temp] /N 1 >> }%
+    \else
+    \edef\next{\next [\texit@temp] /N 1 >> << /FunctionType 2 /Domain [0 1] /C0 [\texit@temp] /C1 }%
+    \fi
+    \fi
+  }%
+  \texit@gradient@colors
+  \immediate\pdfxform resources{\texit@gradient@shader}2
+  \setbox6=\hbox{\pdfliteral direct{/smask gs}\pdfrefxform\pdflastxform}%
+  \pdfobj reserveobjnum\relax
+  \immediate\pdfobj useobjnum\pdflastobj{\texit@gradient@egsresource}%
+  \immediate\pdfxform resources{/ExtGState \the\pdflastobj\space 0 R}6
+  \kern-\texit@gradientbox@overshoot
+  \nointerlineskip \hbox{\kern-\texit@gradientbox@overshoot \pdfrefxform\pdflastxform \kern-\texit@gradientbox@overshoot}%
+  \kern-\texit@gradientbox@overshoot
+  \egroup
+  \else \box#1
+  \fi
+}
+\def\texit@gradientboxA#1{%
+  \iftexit@textgradientglow
+  \texit@gradientboxB#1.0149;4.5;%
+  \texit@gradientboxB#1.0291;3.5;%
+  \texit@gradientboxB#1.0406;3;%
+  \texit@gradientboxB#1.0567;2.5;%
+  \texit@gradientboxB#1.0791;2;%
+  \texit@gradientboxB#1.0934;1.75;%
+  \texit@gradientboxB#1.1104;1.5;%
+  \texit@gradientboxB#1.1304;1.25;%
+  \texit@gradientboxB#1.1540;1;%
+  \texit@gradientboxB#1.1820;.75;%
+  \texit@gradientboxB#1.2150;.5;%
+  \texit@gradientboxB#1.2539;.25;%
+  \fi
+  \pdfliteral{1 g 1 G}\nointerlineskip\box#1
+}
+\def\texit@gradientboxB#1.#2;#3;{%
+  \setbox\z@=\vbox{%
+    \pdfliteral{q 1 g 1 G 1 j 1 J 1 Tr #3 w}%
+    \vbox to\z@{\kern\texit@gradientbox@overshoot
+      \moveright\texit@gradientbox@overshoot \copy#1 \vss}%
+    \pdfliteral{Q}%
+    \vbox to\dimexpr\ht#1+\dp#1+2\texit@gradientbox@overshoot{\hbox to\dimexpr\wd#1+2\texit@gradientbox@overshoot{}\vss}%
+  }%
+  \setbox\tw@=\vbox{%
+    \pdfliteral{q .#2 g .#2 G}%
+    \vbox to\z@{\hrule height\dimexpr\ht#1+\dp#1+2\texit@gradientbox@overshoot
+      width\dimexpr\wd#1+2\texit@gradientbox@overshoot \vss}%
+    \pdfliteral{Q}%
+    \vbox to\dimexpr\ht#1+\dp#1+2\texit@gradientbox@overshoot{\hbox to\dimexpr\wd#1+2\texit@gradientbox@overshoot{}\vss}%
+  }%
+  \nointerlineskip \moveleft\texit@gradientbox@overshoot
+  \vbox to\z@{\kern-\texit@gradientbox@overshoot \texit@mask\z@\tw@ \vss}%
+}
+
+% Use vbox#1 as a clipping mask over vbox#2. The two boxes should have matching dimensions.
+\protected\def\texit@mask#1#2{%
+  \begingroup
+  \immediate\pdfxform#1
+  \setbox\z@=\hbox{\pdfrefxform\pdflastxform}%
+  \immediate\pdfxform attr{/Group << /S /Transparency /CS /DeviceGray >>}\z@
+  \count@=\pdflastxform
+  \immediate\pdfxform#2
+  \setbox2=\hbox{\pdfliteral direct{/smask gs}\pdfrefxform\pdflastxform}%
+  \pdfobj reserveobjnum\relax
+  \immediate\pdfobj useobjnum\pdflastobj{
+    << /smask << /SMask <<
+    /S /Luminosity /G \the\count@\space 0 R
+    >> >> >>
+  }%
+  \immediate\pdfxform resources{/ExtGState \the\pdflastobj\space 0 R}2
+  \pdfrefxform\pdflastxform
+  \endgroup
+}
+
+\newdimen\texit@gradientbox@overshoot
+\texit@gradientbox@overshoot=10\p@
+
+\def\texit@gradient@shader{%
+  /Shading <<
+  /Sh <<
+  /ShadingType 2
+  /ColorSpace /DeviceRGB
+  /Domain [0 \the\numexpr\texit@gradient@count-1\relax]
+  /Coords [
+  \expandafter\texit@rempt \texit@gradientbox@startx\space
+  \expandafter\texit@rempt \texit@gradientbox@starty\space
+  \expandafter\texit@rempt \texit@gradientbox@endx\space
+  \expandafter\texit@rempt \texit@gradientbox@endy\space
+  ]
+  /Function <<
+  /FunctionType 3
+  /Domain [0 \the\numexpr\texit@gradient@count-1\relax]
+  /Functions [\next]
+  /Bounds [\texit@gradient@bounds 1\texit@gradient@count]
+  /Encode [\texit@gradient@encode 1\texit@gradient@count]
+  >>
+  /Extend [true true]
+  >>
+  >>
+}
+\def\texit@gradient@bounds#1#2{%
+  \ifnum#1<\numexpr#2-1\relax
+  #1 %
+  \expandafter\texit@gradient@bounds\expandafter{\the\numexpr #1+1\relax}{#2}%
+  \fi
+}
+\def\texit@gradient@encode#1#2{%
+  \ifnum#1<#2
+  0 1 %
+  \expandafter\texit@gradient@encode\expandafter{\the\numexpr #1+1\relax}{#2}%
+  \fi%
+}
+\def\texit@gradient@egsresource{%
+  << /smask << /SMask <<
+  /S /Luminosity /G \the\count@\space 0 R
+  >> >> >>
+}
+
+% Parse a comma-separated list of hex values to store in \texit@gradient@colors, and set \texit@gradient@count
+\protected\def\texit@gradient@parse#1{%
+  \begingroup
+  \count@=\z@
+  \let\do\relax
+  \let\texit@gradient@colors\empty
+  \expanded{\noexpand\@for\noexpand\next:=#1}\do{%
+    \if\relax\detokenize\expanded{{\expandafter\@gobble\next.}}\relax \else
+    \advance\count@ 1
+    \xdef\texit@gradient@colors{\texit@gradient@colors \do{\the\count@}{\romannumeral-`\0\next}}%
+    \fi
+  }%
+  \ifnum\count@=1
+  \count@=2
+  \def\do##1##2{\noexpand\do1{##2}\noexpand\do2{##2}}%
+  \xdef\texit@gradient@colors{\texit@gradient@colors}%
+  \fi
+  \ifnum\count@<2 \ClassError{texit}{Malformed gradient}{}\fi
+  \xdef\texit@gradient@count{\the\count@}%
+  \endgroup
+}
+
+% Compute endpoints of the gradient
+\protected\def\texit@gradientbox@setends#1#2{%
+  \dimen@i=.5\wd#1
+  \dimen@ii=\dimexpr.5\ht#1+.5\dp#1\relax
+  \ifnum#2<-90
+  \texit@gradientbox@setendsA{#2}++%
+  \else\ifnum#2<0
+  \texit@gradientbox@setendsA{#2}-+%
+  \else\ifnum#2<90
+  \texit@gradientbox@setendsA{#2}--%
+  \else
+  \texit@gradientbox@setendsA{#2}+-%
+  \fi \fi \fi
+}
+\def\texit@gradientbox@setendsA#1#2#3{%
+  \texit@gradientbox@setendsB
+  { cos(#1*deg)*(#2\dimen@i*cos(#1*deg)+#3\dimen@ii*sin(#1*deg))+\dimen@i}%
+  { sin(#1*deg)*(#2\dimen@i*cos(#1*deg)+#3\dimen@ii*sin(#1*deg))-\dimen@ii}%
+  {-cos(#1*deg)*(#2\dimen@i*cos(#1*deg)+#3\dimen@ii*sin(#1*deg))+\dimen@i}%
+  {-sin(#1*deg)*(#2\dimen@i*cos(#1*deg)+#3\dimen@ii*sin(#1*deg))-\dimen@ii}%
+}
+\begingroup \lccode`!=`p \lccode`?=`t \ExplSyntaxOn
+\lowercase{\endgroup
+  \def\texit@gradientbox@setendsB#1#2#3#4{%
+    \edef\texit@gradientbox@startx{\fp_to_decimal:n{round(#1,5)}!?}%
+    \edef\texit@gradientbox@starty{\fp_to_decimal:n{round(#2,5)}!?}%
+    \edef\texit@gradientbox@endx  {\fp_to_decimal:n{round(#3,5)}!?}%
+    \edef\texit@gradientbox@endy  {\fp_to_decimal:n{round(#4,5)}!?}%
+  }
+  \long\def\texit@rempt#1!?{#1}%
+}
+
+
+
+% Debug visuals
+
+\newbox\texit@debug@pagebox
+\newbox\texit@debug@gradientbox
+\newtoks\texit@debug@boxes
+
+\def\texit@debug@node@color{1 1 0}
+
+\protected\def\texit@debug@draw@page#1#2#3{%
+  \pdfsave
+  \pdfliteral{%
+    .996264 0 0 .996264 0 0 cm
+    q
+    1 0 0 1 0 -\strip@pt\dimexpr\ht#1+\dp#1\relax\space cm
+    .25 w
+    #2
+    Q
+    .3 w 1 0 1 rg 1 0 1 RG
+    0 0 \strip@pt\wd#1\space -\strip@pt\dimexpr\ht#1+\dp#1\relax\space re S
+  }%
+  \nointerlineskip \vbox to\z@{\vss\hbox{\texit@debugfont {\texit@debugfontbold#3}\enspace(\the\ht#1 + \the\dp#1) x \the\wd#1}\kern\p@}
+  \pdfrestore
+}
+
+\protected\def\texit@debug@draw@box#1#2#3{%
+  \global\texit@debug@boxes=\expanded{{%
+      \the\texit@debug@boxes
+      1 0 0 1 0 \strip@pt\dimen@i\space cm
+      q
+      #1 rg #1 RG #2
+      0 0 \strip@pt\wd#3\space \strip@pt\dimexpr\ht#3+\dp#3\relax\space re S
+      q
+      [1.25] 0 d
+      0 \strip@pt\dp#3\space m
+      \strip@pt\wd#3\space \strip@pt\dp#3\space l S
+      Q
+      Q
+      1 0 0 1 0 \strip@pt\dimexpr\ht#3+\dp#3\relax\space cm
+  }}%
+}
+
+\protected\def\texit@debug@draw@end#1#2#3#4{%
+  \pdfsave
+  \pdfliteral{#1 rg #1 RG}%
+  \nointerlineskip \moveright\dimexpr#3\relax \vbox to\z@{%
+    \dimen@=\dimexpr#4\relax
+    \kern-\dimen@
+    \kern-4\p@
+    \vbox to4\p@{\hbox to\z@{\hss \texit@debugfont #2\hss}\vss}
+    \pdfliteral{%
+      .996264 0 0 .996264 0 0 cm
+      1.25 w 1 j
+      0 0 m 0 0.01 l s
+    }%
+    \vss
+  }%
+  \pdfrestore
+}
+
+\protected\def\texit@debug@footline{%
+  \pdfsave
+  \pdfliteral{1 0 1 rg}%
+  \nointerlineskip \moveright\p@ \vbox to\z@{%
+    \vss
+    \hbox{\texit@debugfont
+      {\texit@debugfontbold
+        \ifdefined\directlua
+        LuaTeX v\number\luatexversion:\number\luatexrevision
+        \else
+        pdfTeX v\number\pdftexversion:\number\pdftexrevision
+        \fi}\quad
+      {\texit@debugfontbold texit.cls v\texit@version}\quad
+      id: {\texit@debugfontbold \jobname}\quad
+      \iftexit@textgradient
+      textgradient: {\texit@debugfontbold
+        \texit@textgradient\space (\texit@textgradientangle \iftexit@textgradientglow, glow\fi)}%
+      \else
+      textcolor: {\texit@debugfontbold \texit@textcolor}%
+      \fi \quad
+      \iftexit@pagegradient
+      pagegradient: {\texit@debugfontbold
+        \texit@pagegradient\space (\texit@pagegradientangle)}%
+      \else
+      pagecolor: {\texit@debugfontbold \texit@pagecolor}%
+      \fi \quad
+      {\texit@debugfontbold \iftexit@singlepage single\else multi\fi page}\quad
+      minpagewidth: {\texit@debugfontbold \ifdim\texit@minpagewidth<1sp None\else \the\texit@minpagewidth \fi}\quad
+      minhsize: {\texit@debugfontbold \ifdim\texit@minhsize<1sp None\else \the\texit@minhsize \fi}\quad
+      maxhsize: {\texit@debugfontbold \ifdim\texit@maxhsize=\maxdimen None\else \the\texit@maxhsize \fi}\quad
+      border: {\texit@debugfontbold \strip@pt\texit@border
+        \if0%
+        \ifdim\texit@extraborder@T=\z@ \else 1\fi
+        \ifdim\texit@extraborder@L=\z@ \else 1\fi
+        \ifdim\texit@extraborder@B=\z@ \else 1\fi
+        \ifdim\texit@extraborder@R=\z@ \else 1\fi
+        0\else
+        +(\strip@pt\texit@extraborder@T T, \strip@pt\texit@extraborder@L L, \strip@pt\texit@extraborder@B B, \strip@pt\texit@extraborder@R R)%
+        \fi
+        pt%
+      }%
+    }%
+    \kern\p@
+  }%
+  \pdfrestore
+}
+
+
+
+% Patches to LaTeX2e for better OTR compatibility
+
+% Lists force full width
+\edef\endtrivlist{\unexpanded\expandafter{\endtrivlist}\penalty\texit@realwd@forcehsize}
+
+% Minimal float handling
+
+\newinsert\texit@topins \count\texit@topins=1000 \skip\texit@topins=\textfloatsep \dimen\texit@topins=\maxdimen
+\newinsert\texit@botins \count\texit@botins=1000 \skip\texit@botins=\textfloatsep \dimen\texit@botins=\maxdimen
+
+\newif\iftexit@floating
+
+\def\texit@parsefloat#1{%
+  \let\next=\relax
+  \ifx\@nnil#1 \else
+  \if!#1
+  \let\next=\texit@parsefloat
+  \else
+  \let\next=\remove@to@nnil
+  \if t#1
+  \texit@floatingtrue
+  \let\texit@floatclass=\texit@topins
+  \else \if b#1
+  \texit@floatingtrue
+  \let\texit@floatclass=\texit@botins
+  \fi \fi
+  \fi
+  \fi
+  \next
+}
+
+\def\@xfloat#1[#2]{%
+  \@nodocument
+  \def\@captype{#1}%
+  \texit@parsefloat#2\@nnil
+  \ifinner \@parmoderr \fi
+  \setbox\z@=\color@vbox
+  \normalcolor
+  \vbox\bgroup
+  \hsize\columnwidth
+  \@parboxrestore
+  \@floatboxreset
+}%
+\def\end@float{\@endfloatbox}
+\def\@endfloatbox{%
+  \par\vskip\z@skip
+  \@minipagefalse
+  \outer@nobreak
+  \egroup
+  \color@endbox
+  \iftexit@floating
+  \insert\texit@floatclass{%
+    \splittopskip=0pt
+    \splitmaxdepth=\maxdimen
+    \box\z@
+    \vskip\@fpsep
+  }%
+  \else
+  \vskip\intextsep
+  \box\z@
+  \vskip\intextsep
+  \fi
+}
+
+\def\fps@figure{h}
+\def\fps@table{h}
+
+% 5pt-high footnoterule
+\protected\def\footnoterule{%
+  \kern-\p@
+  \hrule\@width\footnoterulewd \@height.4\p@
+  \kern5.6\p@
+}
+\def\footnoteruleht{5\p@}
+\def\footnoterulewd{.4\columnwidth}
+
+\renewcommand\marginpar[2][]{\ClassError{texit}{Not supported}{}}

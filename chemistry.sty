@@ -1,0 +1,19 @@
+\usepackage[version=4]{mhchem}
+\usepackage{chemfig}
+\renewcommand*\printatom[1]{\footnotesize\ensuremath{\mathrm{#1}}}
+\setchemfig{%
+	atom sep = 1.75em,
+	stack sep = 0.3em,% dim for chemabove and below
+	bond offset = 1.25pt,
+	double bond sep = .25em
+}
+\definecolor{cmap1}{HTML}{DD6E79} % #DD6E79
+\definecolor{cmap2}{HTML}{5076A6} % #5076A6
+\definecolor{cmap3}{HTML}{9D3C75} % #9D3C75
+\definecolor{cmap4}{HTML}{AAAA35} % #AAAA35
+\definecolor{cmap5}{HTML}{43863E} % #43863E
+\colorlet{cmap6}{cmap3!55!cmap5}  % #9D3C75!55!43863E
+\tikzset{%
+	atom/.style={draw, circle, minimum size=1.25em, inner sep=0pt},
+	vibr/.style={-Latex, thick}
+}

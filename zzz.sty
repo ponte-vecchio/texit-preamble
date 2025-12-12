@@ -1,0 +1,12 @@
+% Must be loaded last.
+\NewDocumentCommand{\ShowModules}{}{%
+    \begingroup\par\noindent\ttfamily
+    % Colourscheme
+    \ifdefined\ShowThemes ShowThemes\par\medskip\else\fi
+    % Typ
+    \ifdefined\ShowTypDefs ShowTypDefs\par\medskip\else\fi
+    \endgroup\par
+}
+
+\Radical
+\leosays{pagecolor=bg, textcolor=fg}

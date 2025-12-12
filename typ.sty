@@ -1,0 +1,145 @@
+% Typographic enhancements
+\makeatletter
+\RequirePackage[tracking=smallcaps, protrusion=smallcaps, letterspace=50]{microtype}
+\DeclareKeys[typ]{
+  breakpenalty  .tl_gset_e:N  = \typ@breakpenalty,
+  breakpenalty  .initial:n    = \exhyphenpenalty,
+  dashraise     .dim_gset:N   = \typ@dashraise,
+  dashraise     .initial:n    = .6pt,
+  dashspace     .dim_gset:N   = \typ@dashspace,
+  dashspace     .initial:n    = .1em,
+}
+\ProcessKeyOptions[typ]
+\protected\long\def\typset#1{\SetKeys[typ]{#1}}
+
+% Dashes
+\NewDocumentCommand{\typ@breakpoint}{}{\penalty\typ@breakpenalty}
+\NewDocumentCommand{\typ@allowhyp}{}{\ifvmode\relax\else\nobreak\hskip\z@skip\fi}
+\unless\ifdefined\allowhyphenation\let\allowhyphenation\typ@allowhyp\fi
+% Hyphens
+\NewDocumentCommand{\Hyphen}{ s } {%
+  \begingroup%
+    \raisebox{\typ@dashraise}{\char`-}%
+    \IfBooleanTF{#1}%
+      {\ignorespaces}{\typ@breakpoint\typ@allowhyp}%
+  \endgroup%
+}
+\let\capitalhyphen\Hyphen
+
+%% En Dashes
+\NewDocumentCommand{\Ndash}{ s }{%
+  \begingroup%
+    \raisebox{\typ@dashraise}{\textendash}%
+    \IfBooleanTF{#1}%
+      {\ignorespaces}{\typ@breakpoint\typ@allowhyp}%
+  \endgroup%
+}
+\let\capitalendash\Ndash
+\let\Fdash\Ndash
+
+\newcommand*{\wrap@longdashes}[3]
+  {#1\hspace{\typ@dashspace}%
+   #3%
+   #2\hspace{\typ@dashspace}}
+
+\NewDocumentCommand{\endash}{ s O{\z@} }
+{%
+  \IfBooleanTF{#1}
+    {\IfNoValueTF{#2}
+      {\wrap@longdashes{\nobreak}{\nobreak}{\textendash}}
+      {\wrap@longdashes{\nobreak}{\nobreak}{\raisebox{#2}{\textendash}}}}
+    {\IfNoValueTF{#2}
+      {\wrap@longdashes{\relax}{\relax}{\textendash}}
+      {\wrap@longdashes{\relax}{\relax}{\raisebox{#2}{\textendash}}}}%
+   \ignorespaces%
+}
+
+\NewDocumentCommand{\Mdash}{ s }{%
+  \begingroup%
+    \raisebox{\typ@dashraise}{\textemdash}%
+    \IfBooleanTF{#1}%
+      {\ignorespaces}{\typ@breakpoint\typ@allowhyp}%
+  \endgroup%
+}
+
+\NewDocumentCommand{\emdash}{ s O{\z@} }
+{%
+  \IfBooleanTF{#1}
+    {\IfNoValueTF{#2}
+      {\wrap@longdashes{\nobreak}{\nobreak}{\textemdash}}
+      {\wrap@longdashes{\nobreak}{\nobreak}{\raisebox{#2}{\textemdash}}}}
+    {\IfNoValueTF{#2}
+      {\wrap@longdashes{\relax}{\relax}{\textemdash}}
+      {\wrap@longdashes{\relax}{\relax}{\raisebox{#2}{\textemdash}}}}%
+   \ignorespaces%
+}
+
+\let\capitalemdash\Mdash
+\NewDocumentCommand{\Times}{}{%
+  \begingroup\ifmmode
+      \mathbin{\raisebox{\typ@dashraise}{$\m@th\times$}}%
+    \else
+      \raisebox{\typ@dashraise}{\texttimes}%
+    \fi
+  \endgroup%
+}
+
+% Spacing
+% hairspace can be as big as 1/10em and as little as 1/24em
+% we could use plus and minus trick for it to stretch and shrink as required
+\NewDocumentCommand{\hairspace}{}{}
+
+
+\newcommand*{\widespacestrength}{1.}
+\newcommand*{\widespacescale}{1.125}
+\NewDocumentCommand{\widespace}{s}
+  {\IfBooleanTF{#1}%
+    {\dimen0=\widespacescale\fontdimen2\font}%
+    {\ifdim\fontdimen7\font=\z@
+       \dimen0=\widespacescale\fontdimen2\font
+     \else
+       \dimen0=\dimexpr\fontdimen2\font +
+               \widespacestrength\fontdimen7\font
+     \fi}%
+   \hskip \glueexpr\dimen0
+          \@plus \widespacescale\fontdimen3\font
+          \@minus \widespacescale\fontdimen4\font
+   \ignorespaces}
+
+\newcommand*{\narrowspacestrength}{.5}
+\newcommand*{\narrowspacescale}{.9375}
+\NewDocumentCommand{\narrowspace}{s}
+  {\IfBooleanTF{#1}%
+     {\dimen0=\narrowspacescale\fontdimen2\font}%
+     {\ifdim\fontdimen7\font=\z@
+        \dimen0=\narrowspacescale\fontdimen2\font
+      \else
+        \dimen0=\dimexpr\fontdimen2\font -
+                \narrowspacestrength\fontdimen7\font
+      \fi}%
+   \hskip \glueexpr\dimen0
+          \@plus \narrowspacescale\fontdimen3\font
+          \@minus \narrowspacescale\fontdimen4\font
+   \ignorespaces}
+
+% Show existing definitions heretofore
+\NewDocumentCommand{\ShowTypDefs}{}{%
+  \def\typ@cs##1{{\ttfamily\color{magenta}\textbackslash##1}}
+  % show optional args which are s (star) and o (optional)
+  \def\typ@opts##1{{\ttfamily[\narrowspace{\color{blue}##1}\narrowspace]}}
+  \par\noindent{\bfseries Definitions within {\ttfamily Typ}}\par\smallskip
+  \typ@cs{Hyphen}\typ@opts{s}\quad
+    Hyphenation that accounts for capital letters.\par\smallskip
+  \typ@cs{Ndash}\typ@opts{s}\quad
+    En dash that accounts for capital letters.\par\smallskip
+  \typ@cs{endash}\typ@opts{s o[{\string\z@}]}\quad
+    En dash with optional raise with extra kerning. The starred version makes it unbreakable.\par\smallskip
+  \typ@cs{emdash}\typ@opts{s o[{\string\z@}]}\quad
+    Em dash with optional raise with extra kerning. The starred version makes it unbreakable.\par\smallskip
+  \typ@cs{Times}\quad
+    Multiplication sign raised to the appropriate height in text and math modes.\par\smallskip
+  \typ@cs{widespace}\typ@opts{s}\quad
+    Wider interword space. The starred version ignores stretchability from font.\par\smallskip
+  \typ@cs{narrowspace}\typ@opts{s}\quad
+    Narrower interword space. The starred version ignores stretchability from font.\par
+}

@@ -1,0 +1,101 @@
+% Demobox
+\ExplSyntaxOn
+\NewDocumentCommand{\@convert}{ +m +m O{2} }{
+	\str_case:nnF {#2}{
+		{ sp } { \fp_eval:n{ round(\dim_to_decimal_in_unit:nn{#1/#3}{1#2}, 0) } }
+		{ pt } { \fp_eval:n{ round(\dim_to_decimal_in_unit:nn{#1   }{1#2}, 2) } }
+		{ pc } { \fp_eval:n{ round(\dim_to_decimal_in_unit:nn{#1/#3}{1#2}, 3) } }
+		{ in } { \fp_eval:n{ round(\dim_to_decimal_in_unit:nn{#1/#3}{1#2}, 3) } }
+		{ cm } { \fp_eval:n{ round(\dim_to_decimal_in_unit:nn{#1/#3}{1#2}, 3) } }
+	}{% bp, dd, cc, mm follow default
+		\fp_eval:n{ round(\dim_to_decimal_in_unit:nn{(#1 / #3)}{1#2}, 2) }
+	}
+}
+\ExplSyntaxOff
+
+%% Demobox
+\NewDocumentCommand{\demobox}{ s O{2} +m O{pt} }{%
+	\setbox0=\hbox{#3}
+	\setbox1=\hbox{x}% for x height
+	\setbox2=\hbox{H}% for cap height
+	\font\tinymono=CascadiaCode-Light-tlf-t1 at 2pt
+	\font\tinymonobf=CascadiaCode-Regular-tlf-t1 at 2pt
+	\DeclareRobustCommand{\@repr}[3]{%
+		\begingroup\tinymono ##1%
+		% typeset ':' if #1 is given
+		\ifx##1\relax\else:\thinspace\fi\endgroup%
+		\tinymonobf\color{magenta!80!black}\@convert{##2}{##3}%
+		\thinspace##3%
+	}
+	\scalebox{#2}[#2]{%
+		\begin{picture}(2\wd0, 1.6\ht0)
+			\setlength{\unitlength}{1em}
+			\setlength{\fboxrule}{0em}
+			\setlength{\fboxsep}{0em}
+			\linethickness{0.015em}
+			\def\Ldist{0.25}
+			\def\outerdist{0.45}
+			% rulers
+			\put(0, \ht0){\color{black!60}\line(1,0){\wd0}} % ascender
+			\IfBooleanF{#1}{%
+				\ifdim\dimexpr\ht0-\ht2\relax>2pt% cap-height
+				\put(0, \ht2){\color{blue!40}\line(1,0){\wd0}}
+				\fi
+				\ifdim\dimexpr\ht0-\ht1\relax>2pt% x-height
+				\put(0, \ht1){\color{green!40}\line(1,0){\wd0}}
+				\fi
+			}
+			\ifdim\dp0>0.02em
+			\put(0,-\dp0){\color{black!60}\line(1,0){\wd0}} % descender
+			\fi
+			\put(0, 0){\color{red!90!black!50}\line(1,0){\wd0}} % baseline
+			% content
+			\put(0,0){\fbox{#3}}
+			% labels
+			\IfBooleanF{#1}{%
+				% cap height pt
+				\ifdim\dimexpr\ht0-\ht2\relax>\dimexpr\fontdimen6\tinymono/6*5\relax
+				\put(\wd0+\outerdist, \ht2-0.075){\@repr{caph}{\ht2}{#4}}
+				{\linethickness{0.01em}
+					\put(\wd0+0.19, \ht1){\color{red!50!blue!90!black!50}\line(0,1){\ht2-\ht1}}
+					\put(\wd0+0.15, \ht1){\color{red!90!black!66}\line(1,0){0.08}}
+					\put(\wd0+0.15, \ht2){\color{blue!40!black}\line(1,0){0.08}}
+				}
+				\fi
+				% x-height pt
+				\ifdim\dimexpr\ht0-\ht1\relax>\dimexpr\fontdimen6\tinymono/6*5\relax
+				\put(\wd0+\outerdist, 0.5\ht1-0.05){\@repr{xhgt}{\ht1}{#4}}
+				{\linethickness{0.01em}
+					\put(\wd0+0.19, 0){\color{red!50!green!90!black!50}\line(0,1){\ht1}}
+					\put(\wd0+0.15, 0){\color{red!90!black!66}\line(1,0){0.08}}
+					\put(\wd0+0.15, \ht1){\color{green!60!black}\line(1,0){0.08}}
+				}
+				\fi
+			}
+			% depth pt
+			\ifdim\dp0>\dimexpr\fontdimen6\font/13\relax%
+			\put(\wd0+\outerdist, -\dp0-0.05){\@repr{dpth}{\dp0}{#4}}
+			{\linethickness{0.01em}\color{black!33}%
+				\put(\wd0+0.09, -\dp0){\line(0,1){\dp0}}
+				\put(\wd0+0.05, 0){\line(1,0){0.08}}
+				\put(\wd0+0.05, -\dp0){\line(1,0){0.08}}
+			}
+			\fi
+			% height pt
+			\put(\wd0+\outerdist, \ht0){\@repr{hght}{\ht0}{#4}}{%
+				\linethickness{0.01em}\color{black!33}%
+				\put(\wd0+0.05, 0){\line(1,0){0.08}}
+				\put(\wd0+0.05, \ht0){\line(1,0){0.08}}
+				\put(\wd0+0.09, 0){\line(0,1){\ht0}}
+			}
+			% width pt
+			% label
+			\put(0, 1\ht0){\makebox(\wd0, 0.75\ht1+0.25)[c]{\@repr{}{\wd0}{#4}}}{%
+				\linethickness{0.01em}\color{black!33}%
+				\put(0, \ht0+0.075){\line(1,0){\wd0}}
+				\put(0, \ht0+0.035){\line(0,1){0.08}}
+				\put(\wd0, \ht0+0.035){\line(0,1){0.08}}
+			}
+		\end{picture}
+	}
+}
